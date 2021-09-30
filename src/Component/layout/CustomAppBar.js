@@ -2,6 +2,7 @@ import { AccountCircle, Notifications } from '@mui/icons-material'
 import { AppBar, Badge, IconButton, Toolbar} from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
+import { useHistory } from 'react-router'
 
 function CustomAppBar() {
     return (
@@ -17,6 +18,7 @@ function CustomAppBar() {
 
 
 export const AuthenticatedAppBar = () => {
+    const {push} = useHistory()
     return (
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B', height: '10vh', display: 'flex', justifyContent: "center"}}>
             <Toolbar>
@@ -31,7 +33,7 @@ export const AuthenticatedAppBar = () => {
                     <Notifications />
                 </Badge>
                 </IconButton>
-                <IconButton color="inherit">
+                <IconButton color="inherit" onClick={() => { sessionStorage.clear(); push('/') }}>
                     <AccountCircle />
                 </IconButton>
             </Toolbar>

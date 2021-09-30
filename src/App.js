@@ -2,9 +2,10 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import { LandingPage } from './Component/LandingPage';
 import { PageNotFound } from './Component/PageNotFound';
-import Register from './Component/Register';
 import Teacher from './Component/Teacher';
 import TeacherDashboard from './Component/Teacher/Dashboard';
+import StudentDashboard from './Component/Student/Dashboard';
+import { AppRoute, StudentRoute, TeacherRoute } from './library/routes';
 
 const theme = createTheme({
   typography: {
@@ -30,10 +31,11 @@ function App() {
       <Router>
         <ThemeProvider theme={theme}>
             <Switch>
-              <Route exact path="/" component={() => <LandingPage type="login" />} />
-              <Route exact path="/register" component={() => <LandingPage type="register" />} />
-              <Route exact path="/teacher" component={Teacher} />
-              <Route exact path="/faculty" component={TeacherDashboard} />
+              <AppRoute exact path="/" component={() => <LandingPage type="login" />} />
+              <AppRoute exact path="/register" component={() => <LandingPage type="register" />} />
+              <TeacherRoute exact path="/teacher" component={Teacher} />
+              <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
+              <StudentRoute exact path="/student" component={StudentDashboard} />
               <Route path="*" component={PageNotFound} />
             </Switch>
           </ThemeProvider>

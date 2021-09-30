@@ -73,7 +73,13 @@ const LoginComponent = () => {
       const {data} = await axios.post('/users/auth',values)
       console.log(data)
       if (data.success) {
-        push('/faculty')
+        sessionStorage.setItem('user', JSON.stringify(data.user))
+        if (data.user.access_level === 3) {
+          return push('/student')
+        } 
+        if (data.user.access_level === 2) {
+          return push('/faculty')
+        } 
       }
       setMessage(data.message.message)
       setSuccess(data.success ? 'success' : 'error')

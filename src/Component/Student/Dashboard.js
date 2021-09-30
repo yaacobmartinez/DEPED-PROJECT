@@ -65,7 +65,7 @@ function Dashboard() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                <Typography variant="h3">I am a Teacher</Typography>
+                <Typography variant="h3">I am a Student</Typography>
                 <Typography paragraph>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                 tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
