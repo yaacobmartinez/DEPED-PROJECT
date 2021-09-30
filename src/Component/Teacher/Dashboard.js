@@ -35,11 +35,6 @@ function Dashboard() {
             >
             <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
-                {/* <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
-                    <Avatar sx={{ width: 90, height: 90, bgcolor: green[500]  }} src="/test.jpg"/>
-                    <Typography variant="subtitle2" sx={{mt: 2}}>Teacher</Typography>
-                    <Typography variant="caption" sx={{mb:3}}>test@test.com</Typography>
-                </div> */}
                 <Divider />
                 <List>
                     {facultyMenu.map((item, index) => (

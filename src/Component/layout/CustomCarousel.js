@@ -12,7 +12,7 @@ function CustomCarousel() {
         >
           {carouselImages.map((image, index) => (
             <div key={index}>
-              <img src={image} alt="carousel_image" />
+              <img src={image} alt="carousel_image" height="auto" />
             </div>
           ))}
         </Carousel>
