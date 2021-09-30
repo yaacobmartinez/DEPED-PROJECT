@@ -2,15 +2,16 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Checkbox, CssBaseline, FormControlLabel, Grid, Paper, TextField, Toolbar} from '@mui/material';
+import { Alert, Checkbox, CssBaseline, FormControlLabel, Grid, Paper, Snackbar, TextField, Toolbar} from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
-import {Link} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CustomAppBar from './layout/CustomAppBar';
 import CustomCarousel from './layout/CustomCarousel';
-import { Title } from '@mui/icons-material';
+import { PublicTwoTone, Title, YouTube } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import axios from '../library/axios'
 
 export const LandingPage = ({type}) => {
     return(
@@ -51,16 +52,41 @@ const HeroTitle = ({title, subtitle}) => {
 }
 
 const LoginComponent = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(1)
-  }
+  
+  const {push} = useHistory()
+  const [message, setMessage] = React.useState(null)
+  const [success, setSuccess] = React.useState("error")
+
+  const {errors, handleChange, values, handleBlur, handleSubmit } = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    }, 
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email('We need a valid email address')
+        .required('Hey, what\'s your username?'),
+      password: Yup.string()
+        .required('Hey, what\'s your password?')
+    }), 
+    onSubmit:  async values => {
+      const {data} = await axios.post('/users/auth',values)
+      console.log(data)
+      if (data.success) {
+        push('/faculty')
+      }
+      setMessage(data.message.message)
+      setSuccess(data.success ? 'success' : 'error')
+    }
+  })
+
   return (
       <Box sx={{
           my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center',
         }}>
+        <AlertDialog callback={() => setMessage(null)} message={message} success={success}/>
           <HeroTitle title="Sign in to your account" subtitle="Manage your school records with ease" />
-          <Box component="form" noValidate onSubmit={handleSubmit} sx = {{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1 }}>
             <TextField
               size="small"
               margin="normal"
@@ -68,6 +94,11 @@ const LoginComponent = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(errors.email)}
+              helperText={errors.email}
               />
             <TextField
               size="small"
@@ -77,7 +108,11 @@ const LoginComponent = () => {
               name="password"
               type="password"
               autoComplete="password"
-              autoFocus
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
               />
               <Button type="submit" fullWidth variant="contained" sx= {{mt: 3, mb: 2}}>
                 Sign In
@@ -100,18 +135,36 @@ const LoginComponent = () => {
   )
 }
 
+const AlertDialog = ({callback, message, success}) => {
+  return (
+    <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={Boolean(message)}
+        onClose={callback}
+        // onClose={() => setMessage(null)}
+        autoHideDuration={10000}
+      >
+      <Alert variant="filled" onClose={callback} severity={success} sx={{ width: '100%' }}>
+        {message}
+      </Alert>
+      </Snackbar>
+  )
+}
+
 const RegisterComponent = () => {
   const [agreeToPolicy, setAgreeToPolicy] = React.useState(false)
   const changeAgree = () => {
     setAgreeToPolicy(!agreeToPolicy)
   }
-  const {handleSubmit, errors, handleChange, values, handleBlur} = useFormik({
+  const [message, setMessage] = React.useState(null)
+  const [success, setSuccess] = React.useState("error")
+  const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
     initialValues: {
       firstName: '',
       lastName: '',
       email: '',
       password: '',
-      confirmpassword: ''
+      confirmPassword: ''
     }, 
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -132,16 +185,22 @@ const RegisterComponent = () => {
         .required()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
     }), 
-    onSubmit: values => {
-      console.log(values)
+    onSubmit:  async values => {
+      const {data} = await axios.post('/users',values)
+      console.log(data)
+      setMessage(data.success 
+          ? 'Your account has been created. Please wait for within 24-48 hours for your account to be approved before you can log in.' 
+          : data.message )
+      setSuccess(data.success ? 'success' : 'error')
     }
   })
   return (
     <Box sx={{
       my: 8, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'
     }}>
+      <AlertDialog callback={() => setMessage(null)} message={message} success={success}/>
       <HeroTitle title="Sign up for an account" subtitle="Please provide us with your account details" />
-      <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1 }}>
+      <Box component="form" onSubmit={handleSubmit}  noValidate sx = {{ mt: 1 }}>
         <TextField
             size="small"
             margin="normal"
@@ -199,14 +258,14 @@ const RegisterComponent = () => {
           margin="normal"
           required fullWidth
           label="Confirm Password"
-          name="confirmpassword"
+          name="confirmPassword"
           type="password"
           autoComplete="password"
-          value={values.confirmpassword}
+          value={values.confirmPassword}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.confirmpassword}
-          helperText={errors.confirmpassword}
+          error={errors.confirmPassword}
+          helperText={errors.confirmPassword}
           />
             <FormControlLabel
               value="terms-condition"
