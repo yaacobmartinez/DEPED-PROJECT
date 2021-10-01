@@ -51,7 +51,7 @@ export const AppRoute = ({ component: Component, ...rest}) => {
 					return (
 						<Redirect
 							to={{
-								pathname: "/superadmin",
+								pathname: "/control-panel",
 								state: {
 									from: props.location,
 								},
