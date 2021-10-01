@@ -66,8 +66,8 @@ function CustomDrawer() {
                         <ListItemAvatar>
                             <Avatar src="/test.jpg"/>
                         </ListItemAvatar>
-                        <ListItemText primary={<Typography variant="subtitle2">John Dela Cruz</Typography>} 
-                        secondary={<Typography variant="caption" color="textSecondary">j.delacruz@deped.com.ph</Typography>} />
+                        <ListItemText primary={<Typography variant="subtitle2">{user.firstName} {user.lastName}</Typography>} 
+                        secondary={<Typography variant="caption" color="textSecondary">{user.email}</Typography>} />
                     </ListItem>
                 </div>
             </List>
