@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, FormControlLabel, Grid, Paper, Snackbar, TextField, Toolbar} from '@mui/material';
+import { Alert, Checkbox, CssBaseline, FormControlLabel, Grid, Hidden, Paper, Snackbar, TextField, Toolbar} from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -12,6 +12,7 @@ import { PublicTwoTone, Title, YouTube } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from '../library/axios'
+import { saveToStorage } from '../library/utilities/Storage';
 
 export const LandingPage = ({type}) => {
     return(
@@ -20,10 +21,12 @@ export const LandingPage = ({type}) => {
       {/* <Toolbar /> */}
       <Grid container sx = {{height: '100vh'}}>
           <CssBaseline />
-          <Grid item xs= {false} sm={4} md={7} style={{display: 'flex', alignItems: 'center'}}>
-            <CustomCarousel />
-          </Grid>
-          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Hidden mdDown>
+            <Grid item xs={false} sm={4} md={7} style={{display: 'flex', alignItems: 'center'}}>
+              <CustomCarousel />
+            </Grid>
+          </Hidden>
+          <Grid item xs={12} sm={12} md={5} component={Paper} elevation={6} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {type === 'login' && (
               <LoginComponent />
             )}
@@ -73,12 +76,16 @@ const LoginComponent = () => {
       const {data} = await axios.post('/users/auth',values)
       console.log(data)
       if (data.success) {
+        saveToStorage('token', data.token)
         sessionStorage.setItem('user', JSON.stringify(data.user))
         if (data.user.access_level === 3) {
           return push('/student')
         } 
         if (data.user.access_level === 2) {
           return push('/faculty')
+        } 
+        if (data.user.access_level === 4096) {
+          return push('/control-panel')
         } 
       }
       setMessage(data.message.message)
@@ -141,7 +148,7 @@ const LoginComponent = () => {
   )
 }
 
-const AlertDialog = ({callback, message, success}) => {
+export const AlertDialog = ({callback, message, success}) => {
   return (
     <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}

@@ -5,7 +5,10 @@ import { PageNotFound } from './Component/PageNotFound';
 import Teacher from './Component/Teacher';
 import TeacherDashboard from './Component/Teacher/Dashboard';
 import StudentDashboard from './Component/Student/Dashboard';
-import { AppRoute, StudentRoute, TeacherRoute } from './library/routes';
+import SuperAdminDashboard from './Component/SuperAdmin/Dashboard';
+import { AppRoute, StudentRoute, TeacherRoute, SuperAdminRoute } from './library/routes';
+import Users from './Component/SuperAdmin/Users';
+import User from './Component/SuperAdmin/User';
 
 const theme = createTheme({
   typography: {
@@ -31,11 +34,16 @@ function App() {
       <Router>
         <ThemeProvider theme={theme}>
             <Switch>
+
               <AppRoute exact path="/" component={() => <LandingPage type="login" />} />
               <AppRoute exact path="/register" component={() => <LandingPage type="register" />} />
               <TeacherRoute exact path="/teacher" component={Teacher} />
               <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
               <StudentRoute exact path="/student" component={StudentDashboard} />
+              <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
+              <SuperAdminRoute exact path="/control-panel/users" component={Users} />
+              <SuperAdminRoute exact path="/user/:id" component={User} />
+
               <Route path="*" component={PageNotFound} />
             </Switch>
           </ThemeProvider>

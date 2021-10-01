@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
   
   axiosInstance.interceptors.request.use(async (config) => {
     const clonedConfig = cloneDeep(config);
-    const token = fetchFromStorage("ACCESS_TOKEN");
+    const token = fetchFromStorage("token");
   
     if (token) {
       clonedConfig.headers.common = {
