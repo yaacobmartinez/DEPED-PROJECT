@@ -91,7 +91,8 @@ const UserRow = ({user, refreshList}) => {
 const ProvisionDialog = ({id, access_level, open, onClose, refreshList}) => {
     const [loading, setLoading] = React.useState(false)
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault()
         const res = await axios.post(`/users/provision/${id}`, 
         {
             provision: true, 
