@@ -81,7 +81,7 @@ const UserRow = ({user, refreshList}) => {
                 id={user._id} 
                 access_level={user.access_level} 
                 open={provisionDialog}
-                onClose={() => setProvisionDialog}
+                onClose={() => setProvisionDialog(false)}
                 refreshList={refreshList}
             />
         </TableRow>
@@ -109,7 +109,7 @@ const ProvisionDialog = ({id, access_level, open, onClose, refreshList}) => {
             </DialogContent>
             <DialogActions>
                 <Button variant="outlined" size="small" disabled={loading} onClick={onClose}>Cancel</Button>
-                <Button variant="contained" size="small" type="submit" disabled={loading} color="primary">Create Account</Button>
+                <Button variant="contained" size="small" type="submit" disabled={loading} color="primary">Save</Button>
             </DialogActions>
         </Dialog>
     )
