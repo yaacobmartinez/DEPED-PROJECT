@@ -72,9 +72,9 @@ const UserRow = ({user, refreshList}) => {
     const [provisionDialog, setProvisionDialog] = React.useState(false)
 
     return (
-        <TableRow onClick={() => push(`/user/${user._id}`)} hover>
-            <TableCell>{user.firstName} {user.lastName}</TableCell>
-            <TableCell>{user.email}</TableCell>
+        <TableRow hover>
+            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.firstName} {user.lastName}</TableCell>
+            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.email}</TableCell>
             <TableCell align="center"><Switch readOnly checked={checked} onChange={() => setProvisionDialog(true)}/></TableCell>
             <TableCell>{returnAccessLevelString(user.access_level)}</TableCell>
             <ProvisionDialog 
