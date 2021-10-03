@@ -1,6 +1,7 @@
 import { AccountCircle, Book, Home, ListAlt, Settings } from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
+import SchoolIcon from '@mui/icons-material/School';
 import React from 'react'
 import { useHistory } from 'react-router';
 const drawerWidth = 300;
@@ -15,6 +16,11 @@ const superadminMenu = [
         name: 'User Accounts', 
         icon: <AccountCircle />,
         link: '/control-panel/users'
+    },
+    {
+        name: 'Schools', 
+        icon: <SchoolIcon />,
+        link: '/control-panel/schools'
     },
 ]
 

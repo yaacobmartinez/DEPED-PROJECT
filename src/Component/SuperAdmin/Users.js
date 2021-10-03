@@ -11,8 +11,6 @@ import { returnAccessLevelString } from '../utils/functions';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { AlertDialog } from '../LandingPage';
-import MUIDataTable, {Button as MUIButton} from 'mui-datatables';
-import { userTableColumns } from '../utils/constants';
 const drawerWidth = 300;
 
 
@@ -41,17 +39,6 @@ function Users() {
                 <Toolbar />
                 <Typography variant="h6">Manage Users Accounts</Typography>
                 <NewUserModal open={newUser} onClose={() => setNewUser(false)} refreshList={getUsers} />
-                {users && (
-                    <MUIDataTable
-                        title="Manage User Accounts"
-                        data={users}
-                        columns={userTableColumns}
-                        options={{filterType: 'checkbox'}}
-                        components={{
-                            MUIButton: Button
-                        }}
-                    />
-                )}
                 <div style={{display: 'flex', justifyContent:"flex-end", alignItems: 'center', margin: "20px 0px"}}>
                     <Button 
                         onClick={() => setNewUser(true)}
@@ -69,7 +56,7 @@ function Users() {
                         </TableHead>
                         <TableBody>
                             {users?.map((user, index) => (
-                                <UserRow user={user} key={index} refreshList={getUsers}/>
+                                <UserRow user={user} key={index}/>
                             ))}
                         </TableBody>
                     </Table>
@@ -79,11 +66,14 @@ function Users() {
     )
 }
 
-const UserRow = ({user, refreshList}) => {
+const UserRow = ({user}) => {
     const [checked, setChecked] = React.useState(user.provisioned);
     const {push} = useHistory()
     const [provisionDialog, setProvisionDialog] = React.useState(false)
 
+    const onChange = (state) => {
+        setChecked(state)
+    }
     return (
         <TableRow hover>
             <TableCell onClick={() => push(`/user/${user._id}`)}>{user.firstName} {user.lastName}</TableCell>
@@ -92,38 +82,47 @@ const UserRow = ({user, refreshList}) => {
             <TableCell>{returnAccessLevelString(user.access_level)}</TableCell>
             <ProvisionDialog 
                 id={user._id} 
-                access_level={user.access_level} 
+                user={user} 
                 open={provisionDialog}
                 onClose={() => setProvisionDialog(false)}
-                refreshList={refreshList}
+                onChange={onChange}
             />
         </TableRow>
     )
 }
 
-const ProvisionDialog = ({id, access_level, open, onClose, refreshList}) => {
+const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     const [loading, setLoading] = React.useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         const res = await axios.post(`/users/provision/${id}`, 
         {
-            provision: true, 
-            access_level
+            provision: !user.provisioned, 
+            access_level: user.access_level
         })
-        console.log(res)
-        refreshList()
+        console.log(res.data)
+        onChange(!user.provisioned)
         onClose()
     }
     return (
         <Dialog open={open} onClose={onClose} component="form" onSubmit={handleSubmit}>
             <DialogTitle>Allow Access?</DialogTitle>
             <DialogContent>
-                Are you sure you want to give access to this user?
+                {user.access_level !== 3
+                    ?(
+                        <p>Are you sure you want to {user.provisioned ? 'revoke' : 'give'} access to this user?</p>
+                    ): (
+                        <p>Please update the student record first before granting access to a Student account.</p>
+                    )}
             </DialogContent>
             <DialogActions>
                 <Button variant="outlined" size="small" disabled={loading} onClick={onClose}>Cancel</Button>
-                <Button variant="contained" size="small" type="submit" disabled={loading} color="primary">Save</Button>
+                {
+                    user.access_level !== 3 && (
+                        <Button variant="contained" size="small" type="submit" disabled={loading} color="primary">Save</Button>
+                    ) 
+                }
             </DialogActions>
         </Dialog>
     )

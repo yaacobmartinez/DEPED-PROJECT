@@ -9,6 +9,8 @@ import SuperAdminDashboard from './Component/SuperAdmin/Dashboard';
 import { AppRoute, StudentRoute, TeacherRoute, SuperAdminRoute } from './library/routes';
 import Users from './Component/SuperAdmin/Users';
 import User from './Component/SuperAdmin/User';
+import Schools from './Component/SuperAdmin/Schools';
+import School from './Component/SuperAdmin/School';
 
 const theme = createTheme({
   typography: {
@@ -42,7 +44,9 @@ function App() {
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />
+              <SuperAdminRoute exact path="/control-panel/schools" component={Schools} />
               <SuperAdminRoute exact path="/user/:id" component={User} />
+              <SuperAdminRoute exact path="/school/:id" component={School} />
 
               <Route path="*" component={PageNotFound} />
             </Switch>

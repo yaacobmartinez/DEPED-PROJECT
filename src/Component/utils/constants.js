@@ -15,3 +15,37 @@ export const userTableColumns = [
     options: tableOptions
   }
 ]
+
+export const accountsAvailable = [
+  {
+      text: 'Faculty', 
+      value: 2
+  },
+  {
+      text: 'Administrator', 
+      value: 2048
+  },
+  {
+      text: 'Super Administrator', 
+      value: 4096
+  },
+]
+
+export const accountsAvailablePublic = [
+  {
+      text: 'Student', 
+      value: 3
+  },
+  {
+      text: 'Faculty', 
+      value: 2
+  },
+  {
+      text: 'Administrator', 
+      value: 2048
+  },
+  {
+      text: 'Super Administrator', 
+      value: 4096
+  },
+]
