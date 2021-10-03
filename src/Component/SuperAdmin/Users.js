@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material';
-import { Avatar, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, Paper, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar, Typography } from '@mui/material';
+import { Avatar, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, Paper, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
@@ -11,6 +11,8 @@ import { returnAccessLevelString } from '../utils/functions';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { AlertDialog } from '../LandingPage';
+import MUIDataTable, {Button as MUIButton} from 'mui-datatables';
+import { userTableColumns } from '../utils/constants';
 const drawerWidth = 300;
 
 
@@ -39,6 +41,17 @@ function Users() {
                 <Toolbar />
                 <Typography variant="h6">Manage Users Accounts</Typography>
                 <NewUserModal open={newUser} onClose={() => setNewUser(false)} refreshList={getUsers} />
+                {users && (
+                    <MUIDataTable
+                        title="Manage User Accounts"
+                        data={users}
+                        columns={userTableColumns}
+                        options={{filterType: 'checkbox'}}
+                        components={{
+                            MUIButton: Button
+                        }}
+                    />
+                )}
                 <div style={{display: 'flex', justifyContent:"flex-end", alignItems: 'center', margin: "20px 0px"}}>
                     <Button 
                         onClick={() => setNewUser(true)}

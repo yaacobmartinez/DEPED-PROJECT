@@ -20,9 +20,9 @@ function CustomAppBar() {
 export const AuthenticatedAppBar = () => {
     const {push} = useHistory()
     return (
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B', height: '10vh', display: 'flex', justifyContent: "center"}}>
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B'}}>
             <Toolbar>
-                <img src = "../depedicon.png" alt="logo" style={{height: '8vh', }}/>
+                <img src = "../depedicon.png" alt="logo" style={{height: '50px', }}/>
                 <Box sx={{flexGrow: 1}} />
                 <IconButton
                 size="large"
