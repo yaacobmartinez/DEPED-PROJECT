@@ -21,15 +21,18 @@ const superadminMenu = [
 const facultyMenu = [
     {
         name: 'Home', 
-        icon: <Home />
+        icon: <Home />,
+        link: '/faculty'
     },
     {
         name: 'My Classes', 
-        icon: <Book />
+        icon: <Book />,
+        link: '/faculty/classes'
     },
     {
         name: 'Forms', 
-        icon: <ListAlt />
+        icon: <ListAlt />,
+        link: '/faculty/forms'
     },
 ]
 

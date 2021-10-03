@@ -69,7 +69,7 @@ function Users() {
                         </TableHead>
                         <TableBody>
                             {users?.map((user, index) => (
-                                <UserRow user={user} key={index}/>
+                                <UserRow user={user} key={index} refreshList={getUsers}/>
                             ))}
                         </TableBody>
                     </Table>
@@ -79,18 +79,53 @@ function Users() {
     )
 }
 
-const UserRow = ({user}) => {
+const UserRow = ({user, refreshList}) => {
     const [checked, setChecked] = React.useState(user.provisioned);
     const {push} = useHistory()
-
+    const [provisionDialog, setProvisionDialog] = React.useState(false)
 
     return (
-        <TableRow onClick={() => push(`/user/${user._id}`)} hover>
-            <TableCell>{user.firstName} {user.lastName}</TableCell>
-            <TableCell>{user.email}</TableCell>
-            <TableCell align="center"><Switch readOnly checked={checked} /></TableCell>
+        <TableRow hover>
+            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.firstName} {user.lastName}</TableCell>
+            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.email}</TableCell>
+            <TableCell align="center"><Switch readOnly checked={checked} onChange={() => setProvisionDialog(true)}/></TableCell>
             <TableCell>{returnAccessLevelString(user.access_level)}</TableCell>
+            <ProvisionDialog 
+                id={user._id} 
+                access_level={user.access_level} 
+                open={provisionDialog}
+                onClose={() => setProvisionDialog(false)}
+                refreshList={refreshList}
+            />
         </TableRow>
+    )
+}
+
+const ProvisionDialog = ({id, access_level, open, onClose, refreshList}) => {
+    const [loading, setLoading] = React.useState(false)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const res = await axios.post(`/users/provision/${id}`, 
+        {
+            provision: true, 
+            access_level
+        })
+        console.log(res)
+        refreshList()
+        onClose()
+    }
+    return (
+        <Dialog open={open} onClose={onClose} component="form" onSubmit={handleSubmit}>
+            <DialogTitle>Allow Access?</DialogTitle>
+            <DialogContent>
+                Are you sure you want to give access to this user?
+            </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" size="small" disabled={loading} onClick={onClose}>Cancel</Button>
+                <Button variant="contained" size="small" type="submit" disabled={loading} color="primary">Save</Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 
