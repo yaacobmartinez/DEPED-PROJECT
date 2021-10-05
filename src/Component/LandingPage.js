@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, FormControlLabel, Grid, Hidden, Paper, Snackbar, TextField, Toolbar} from '@mui/material';
+import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, InputLabel, MenuItem, Paper, Select, Snackbar, TextField, Toolbar} from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -78,11 +78,17 @@ const LoginComponent = () => {
       if (data.success) {
         saveToStorage('token', data.token)
         sessionStorage.setItem('user', JSON.stringify(data.user))
+        if (data.user.confirmed) {
+          return push('/change-password')
+        }
         if (data.user.access_level === 3) {
           return push('/student')
         } 
         if (data.user.access_level === 2) {
           return push('/faculty')
+        } 
+        if (data.user.access_level === 2048) {
+          return push('/admin')
         } 
         if (data.user.access_level === 4096) {
           return push('/control-panel')
@@ -165,10 +171,22 @@ export const AlertDialog = ({callback, message, success}) => {
 }
 
 const RegisterComponent = () => {
+  const [schools, setSchools] = React.useState(null)
   const [agreeToPolicy, setAgreeToPolicy] = React.useState(false)
   const changeAgree = () => {
     setAgreeToPolicy(!agreeToPolicy)
   }
+  const getSchools = React.useCallback(
+      async () => {
+          const res = await axios.get(`/schools`)
+          console.log(res.data)
+          setSchools(res.data.schools)
+      },
+  [])
+  React.useEffect(() => {
+      getSchools()
+  },[getSchools])
+
   const [message, setMessage] = React.useState(null)
   const [success, setSuccess] = React.useState("error")
   const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
@@ -177,7 +195,8 @@ const RegisterComponent = () => {
       lastName: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      school : ''
     }, 
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -195,8 +214,10 @@ const RegisterComponent = () => {
         ),
       confirmPassword: Yup
         .string()
-        .required()
-        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required('Passwords must match')
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
+      school: Yup.string()
+          .required('We need to know which school are you enrolling.')
     }), 
     onSubmit:  async values => {
       const {data} = await axios.post('/users',values)
@@ -280,15 +301,32 @@ const RegisterComponent = () => {
           error={errors.confirmPassword}
           helperText={errors.confirmPassword}
           />
-            <FormControlLabel
-              value="terms-condition"
-              control={<Checkbox />}
-              label={`By clicking on create account, you agree to our Privacy Policy.`}
-              disableTypography={true}
-              style={{fontSize: 12}}
-              onChange={changeAgree}
-              checked={agreeToPolicy}
-            />
+          {schools && (
+            <FormControl fullWidth focused>
+                <InputLabel shrink={true}>School</InputLabel>
+                <Select
+                    size="small"
+                    value={values.school}
+                    label="School"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name="school"
+                >
+                    {schools?.map((school) => (
+                        <MenuItem value={school._id}>{school.name}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+          )}
+          <FormControlLabel
+            value="terms-condition"
+            control={<Checkbox />}
+            label={`By clicking on create account, you agree to our Privacy Policy.`}
+            disableTypography={true}
+            style={{fontSize: 12}}
+            onChange={changeAgree}
+            checked={agreeToPolicy}
+          />
           <Button type="submit" disabled={!agreeToPolicy} fullWidth variant="contained" sx= {{mt: 3, mb: 2}}>
             Create Account
           </Button> 

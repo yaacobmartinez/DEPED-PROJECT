@@ -16,3 +16,9 @@ export const returnAccessLevelString = (access_level) => {
     }
     return access_level_string
 }
+
+export const getFullName = (params) => {
+    return `${params.getValue(params.id, 'firstName') || ''} ${
+      params.getValue(params.id, 'lastName') || ''
+    }`;
+}

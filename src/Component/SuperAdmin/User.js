@@ -48,40 +48,16 @@ function User() {
                 <Paper sx={{background: '#edf1f7', p: 2}} elevation={0}>
                     <Typography variant="button" sx={{color: "#000"}}>User Account Details </Typography> 
                     {user && (
-                        <UserDetails user={user} />
+                        <UserDetails user={user} schools={schools} />
                     )}
                 </Paper>
                 {errorFetching && 'The User you are looking for cannot be found. Try going back.'}
-                {user?.access_level === 3 && (
-                    <Paper sx={{background: '#edf1f7', p: 2, mt: 2}} elevation={0}>
-                        <Typography variant="button" sx={{color: "#000"}}>Student Record</Typography> 
-                        <Grid container >
-                            <Grid item xs={6} style={{marginTop: 15}} >
-                                <FormControl fullWidth >
-                                    <InputLabel>School</InputLabel>
-                                    <Select
-                                        size="small"    
-                                        // value={values.access_level}
-                                        label="School"
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
-                                        name="school"
-                                    >
-                                        {schools?.map((school, index) => (
-                                            <MenuItem key={index} value={school._id}>{school.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                )}
             </Box>
         </Box>
     )
 }
 
-const UserDetails = ({user}) => {
+const UserDetails = ({user, schools}) => {
 
     const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
         initialValues: user, 
@@ -94,7 +70,8 @@ const UserDetails = ({user}) => {
             .email('We need a valid email address')
             .required('Email Address is required.'),
           access_level: Yup.number()
-            .required('Access Level is required.')
+            .required('Access Level is required.'),
+          school: Yup.string()
         }), 
        
       })
@@ -180,6 +157,23 @@ const UserDetails = ({user}) => {
                 >
                     {accountsAvailablePublic.map((account, index) => (
                         <MenuItem key={index} value={account.value}>{account.text}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12} style={{marginTop: 15}} >
+            <FormControl fullWidth >
+                <InputLabel>School</InputLabel>
+                <Select
+                    size="small"    
+                    value={values.school}
+                    label="School"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    name="school"
+                >
+                    {schools?.map((school, index) => (
+                        <MenuItem key={index} value={school._id}>{school.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>

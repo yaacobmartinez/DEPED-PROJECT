@@ -1,23 +1,26 @@
 import { Add } from '@mui/icons-material';
-import { Avatar, Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, InputLabel, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, Paper, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar, Typography } from '@mui/material';
+import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
-import { green } from '@mui/material/colors';
 import { useHistory } from 'react-router';
 import CustomDrawer from '../layout/CustomDrawer';
 import axios from '../../library/axios'
-import { returnAccessLevelString } from '../utils/functions';
+import { getFullName, returnAccessLevelString } from '../utils/functions';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { AlertDialog } from '../LandingPage';
-const drawerWidth = 300;
+import { accountsAvailable } from '../utils/constants';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
 
 
 function Users() {
-    const {push} = useHistory()
     const [users, setUsers] = React.useState([])
     const [newUser, setNewUser] = React.useState(false)
+    const [schools, setSchools] = React.useState(null)
+    const [pageSize, setPageSize] = React.useState(10);
+    const [selectedRecord, setSelectedRecord] = React.useState(null)
     const getUsers = React.useCallback(
         async () => {
             const res = await axios.get(`/users`)
@@ -25,11 +28,19 @@ function Users() {
             setUsers(res.data.users)
         },
     [])
+    const getSchools = React.useCallback(
+        async () => {
+            const res = await axios.get(`/schools`)
+            console.log(res.data)
+            setSchools(res.data.schools)
+        },
+    [])
+
     React.useEffect(() => {
         getUsers()
-    }, [getUsers])
+        getSchools()
+    }, [getUsers, getSchools])
 
-    
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -38,60 +49,86 @@ function Users() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 <Typography variant="h6">Manage Users Accounts</Typography>
-                <NewUserModal open={newUser} onClose={() => setNewUser(false)} refreshList={getUsers} />
+                <NewUserModal open={newUser} onClose={() => setNewUser(false)} refreshList={getUsers} schools={schools} />
                 <div style={{display: 'flex', justifyContent:"flex-end", alignItems: 'center', margin: "20px 0px"}}>
                     <Button 
                         onClick={() => setNewUser(true)}
                         variant="contained" size="small" color="primary" startIcon={<Add /> }>Add new User</Button>
                 </div>
-                <TableContainer component={Paper}>
-                    <Table  size="small" >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Full Name</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell align="center">Access Allowed?</TableCell>
-                                <TableCell>Access Level</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users?.map((user, index) => (
-                                <UserRow user={user} key={index}/>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                {
+                    selectedRecord && (
+                        <ProvisionDialog 
+                            id={selectedRecord.id} 
+                            user={selectedRecord.row} 
+                            open={Boolean(selectedRecord)}
+                            onClose={() => setSelectedRecord(null)}
+                            onChange={getUsers}
+                        />
+                    )
+                }
+                <div style={{minHeight: 650, height: 650, width: '100%'}}>
+                    {users && (
+                        <DataGrid rows={users} 
+                            autoHeight 
+                            rowHeight={35}
+                            getRowId={(row) => row._id}
+                            components={{
+                                Toolbar: GridToolbar,
+                            }}
+                            columns={[
+                                { 
+                                    field: 'fullName', 
+                                    headerName: 'Full Name',
+                                    flex: 1,
+                                    minWidth: 250,
+                                    valueGetter: getFullName,
+                                    sortable: false,
+                                    renderCell: cell => {
+                                        return (
+                                            <Typography variant="body2" component={Link} to={`/user/${cell.id}`} color="black" sx={{textDecoration: 'none'}}>{cell.value}</Typography>
+                                        )
+                                    }
+                                },
+                                { 
+                                    field: 'email', 
+                                    headerName: 'Email',
+                                    flex: 1,
+                                    minWidth: 350, 
+                                },
+                                { 
+                                    field: 'provisioned', 
+                                    headerName: 'Access Allowed',
+                                    width: 150, 
+                                    renderCell: (cellValues) => {
+                                        return (
+                                            <Switch readOnly checked={cellValues.value} onChange={() => setSelectedRecord(cellValues)}/>
+                                        )
+                                    }
+                                },
+                                { 
+                                    field: 'access_level', 
+                                    headerName: 'Access Level',
+                                    flex: 1,
+                                    minWidth: 250, 
+                                    valueGetter: (params) => {
+                                        return returnAccessLevelString(params.value)
+                                    },
+                                },
+                            ]}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            pagination
+                            pageSize={pageSize}
+                            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                        />
+                    )}
+                </div>
             </Box>
             </Box>
     )
 }
 
-const UserRow = ({user}) => {
-    const [checked, setChecked] = React.useState(user.provisioned);
-    const {push} = useHistory()
-    const [provisionDialog, setProvisionDialog] = React.useState(false)
 
-    const onChange = (state) => {
-        setChecked(state)
-    }
-    return (
-        <TableRow hover>
-            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.firstName} {user.lastName}</TableCell>
-            <TableCell onClick={() => push(`/user/${user._id}`)}>{user.email}</TableCell>
-            <TableCell align="center"><Switch readOnly checked={checked} onChange={() => setProvisionDialog(true)}/></TableCell>
-            <TableCell>{returnAccessLevelString(user.access_level)}</TableCell>
-            <ProvisionDialog 
-                id={user._id} 
-                user={user} 
-                open={provisionDialog}
-                onClose={() => setProvisionDialog(false)}
-                onChange={onChange}
-            />
-        </TableRow>
-    )
-}
-
-const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
+export const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     const [loading, setLoading] = React.useState(false)
 
     const handleSubmit = async (e) => {
@@ -102,7 +139,7 @@ const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
             access_level: user.access_level
         })
         console.log(res.data)
-        onChange(!user.provisioned)
+        onChange()
         onClose()
     }
     return (
@@ -128,24 +165,11 @@ const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     )
 }
 
-const NewUserModal = ({open, onClose, refreshList}) => {
-    const accountsAvailable = [
-        {
-            text: 'Faculty', 
-            value: 2
-        },
-        {
-            text: 'Administrator', 
-            value: 2048
-        },
-        {
-            text: 'Super Administrator', 
-            value: 4096
-        },
-    ]
+const NewUserModal = ({open, onClose, refreshList, schools}) => {
     const [message, setMessage] = React.useState(null)
     const [success, setSuccess] = React.useState("error")
     const [loading, setLoading] = React.useState(false)
+    
     const now = new Date()
     const defaultPassword = "DEPED" + (now.getUTCMonth() + 1) + "" + now.getDate()  + "" + now.getFullYear()
     const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
@@ -156,7 +180,8 @@ const NewUserModal = ({open, onClose, refreshList}) => {
           password: defaultPassword,
           confirmed: true, 
           access_level: 2, 
-          provisioned: true
+          provisioned: true,
+          school: '',
         }, 
         validationSchema: Yup.object({
           firstName: Yup.string()
@@ -167,7 +192,8 @@ const NewUserModal = ({open, onClose, refreshList}) => {
             .email('We need a valid email address')
             .required('Email Address is required.'),
           access_level: Yup.number()
-            .required('Access Level is required.')
+          .required('Access Level is required.'),
+          school: Yup.string()
             
         }), 
         onSubmit:  async (values, {resetForm}) => {
@@ -251,6 +277,27 @@ const NewUserModal = ({open, onClose, refreshList}) => {
                             </Select>
                         </FormControl>
                     </Grid>
+                    {
+                        values.access_level !== 4096 && (
+                            <Grid item xs={12}>
+                                <FormControl fullWidth focused>
+                                    <InputLabel shrink={true}>School</InputLabel>
+                                    <Select
+                                        size="small"
+                                        value={values.school}
+                                        label="School"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="school"
+                                    >
+                                        {schools?.map((school) => (
+                                            <MenuItem value={school._id}>{school.name}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        )
+                    }
                 </Grid>   
             </DialogContent>
             <DialogActions>

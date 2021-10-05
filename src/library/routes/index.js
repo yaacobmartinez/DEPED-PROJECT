@@ -70,7 +70,18 @@ export const StudentRoute = ({ component: Component, ...rest}) => {
         <Route
 			{...rest}
 			render={(props) => {
-				if (user.access_level === 3) {
+				if (!user) {
+					return (
+						<Redirect
+							to={{
+								pathname: "/",
+								state: {
+									from: props.location,
+								},
+							}}
+						/>	
+					)
+				} else if (user.access_level === 3) {
 					return (
                         <Component {...props}/>
 					);
@@ -92,11 +103,23 @@ export const StudentRoute = ({ component: Component, ...rest}) => {
 }
 export const TeacherRoute = ({ component: Component, ...rest}) => {
     const user = JSON.parse(sessionStorage.getItem('user'))
+	console.log(user)
     return (
         <Route
 			{...rest}
 			render={(props) => {
-				if (user.access_level === 2) {
+				if (!user) {
+					return(
+						<Redirect
+							to={{
+								pathname: "/",
+								state: {
+									from: props.location,
+								},
+							}}
+						/>	
+					)
+				} else if (user.access_level === 2) {
 					return (
                         <Component {...props}/>
 					);
@@ -122,7 +145,18 @@ export const AdminRoute = ({ component: Component, ...rest}) => {
         <Route
 			{...rest}
 			render={(props) => {
-				if (user.access_level === 2048) {
+				if (!user) {
+					return(
+						<Redirect
+							to={{
+								pathname: "/",
+								state: {
+									from: props.location,
+								},
+							}}
+						/>	
+					)
+				} else if (user.access_level === 2048) {
 					return (
                         <Component {...props}/>
 					);
@@ -148,7 +182,18 @@ export const SuperAdminRoute = ({ component: Component, ...rest}) => {
         <Route
 			{...rest}
 			render={(props) => {
-				if (user.access_level === 4096) {
+				if (!user) {
+					return(
+						<Redirect
+							to={{
+								pathname: "/",
+								state: {
+									from: props.location,
+								},
+							}}
+						/>	
+					)
+				} else if (user.access_level === 4096) {
 					return (
                         <Component {...props}/>
 					);

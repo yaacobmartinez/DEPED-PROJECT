@@ -6,11 +6,16 @@ import Teacher from './Component/Teacher';
 import TeacherDashboard from './Component/Teacher/Dashboard';
 import StudentDashboard from './Component/Student/Dashboard';
 import SuperAdminDashboard from './Component/SuperAdmin/Dashboard';
-import { AppRoute, StudentRoute, TeacherRoute, SuperAdminRoute } from './library/routes';
+import AdminDashboard from './Component/Admin/Dashboard';
+import AdminSchool from './Component/Admin/School';
+import AdminStudents from './Component/Admin/Students';
+import AdminFaculty from './Component/Admin/Faculty';
+import { AppRoute, StudentRoute, TeacherRoute, SuperAdminRoute, AdminRoute } from './library/routes';
 import Users from './Component/SuperAdmin/Users';
 import User from './Component/SuperAdmin/User';
 import Schools from './Component/SuperAdmin/Schools';
 import School from './Component/SuperAdmin/School';
+import ChangePassword from './Component/ChangePassword';
 
 const theme = createTheme({
   typography: {
@@ -42,12 +47,18 @@ function App() {
               <TeacherRoute exact path="/teacher" component={Teacher} />
               <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
               <StudentRoute exact path="/student" component={StudentDashboard} />
+              <AdminRoute exact path="/admin" component={AdminDashboard} />
+              <AdminRoute exact path="/admin/school" component={AdminSchool} />
+              <AdminRoute exact path="/admin/students" component={AdminStudents} />
+              <AdminRoute exact path="/admin/faculty" component={AdminFaculty} />
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />
               <SuperAdminRoute exact path="/control-panel/schools" component={Schools} />
               <SuperAdminRoute exact path="/user/:id" component={User} />
               <SuperAdminRoute exact path="/school/:id" component={School} />
 
+              <Route exact path="/change-password" component={ChangePassword} />
+              
               <Route path="*" component={PageNotFound} />
             </Switch>
           </ThemeProvider>

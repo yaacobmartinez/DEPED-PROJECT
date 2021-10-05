@@ -1,4 +1,4 @@
-import { AccountCircle, Book, Home, ListAlt, Settings } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Book, Campaign, Description, Home, ListAlt, Person, Settings, SupervisedUserCircle, SupervisorAccount } from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
@@ -41,6 +41,38 @@ const facultyMenu = [
         link: '/faculty/forms'
     },
 ]
+const adminMenu = [
+    {
+        name: 'Home', 
+        icon: <Home />,
+        link: '/admin'
+    },
+    {
+        name: 'My School', 
+        icon: <AccountBalance />,
+        link: '/admin/school'
+    },
+    {
+        name: 'Faculty', 
+        icon: <SupervisedUserCircle />,
+        link: '/admin/faculty'
+    },
+    {
+        name: 'Students', 
+        icon: <Person />,
+        link: '/admin/students'
+    },
+    {
+        name: 'Forms', 
+        icon: <Description />,
+        link: '/admin/forms'
+    },
+    {
+        name: 'Announcements', 
+        icon: <Campaign />,
+        link: '/admin/announcements'
+    },
+]
 
 function CustomDrawer() {
     const user = JSON.parse(sessionStorage.getItem('user'))
@@ -62,6 +94,9 @@ function CustomDrawer() {
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
                 {user.access_level === 3 && facultyMenu.map((item, index) => (
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                ))}
+                {user.access_level === 2048 && adminMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
                 <div style={{position: 'fixed', bottom: 0, width: drawerWidth}}>

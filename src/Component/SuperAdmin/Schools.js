@@ -9,10 +9,13 @@ import axios from '../../library/axios'
 import * as Yup from 'yup';
 import { AlertDialog } from '../LandingPage'
 import { useHistory } from 'react-router'
+import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 
 function Schools() {
+    const {push} = useHistory()
     const [newSchool, setNewSchool] = useState(false)
     const [schools, setSchools] = useState(null)
+    const [pageSize, setPageSize] = React.useState(10);
     const getSchools = React.useCallback(
         async () => {
             const res = await axios.get(`/schools`)
@@ -36,6 +39,51 @@ function Schools() {
                     <Button 
                         onClick={() => setNewSchool(true)}
                         variant="contained" size="small" color="primary" startIcon={<Add /> }>Add new School</Button>
+                </div>
+                <div style={{minHeight: 650, height: 650, width: '100%'}}>
+                    {
+                        schools && (
+                            <DataGrid rows={schools} 
+                            autoHeight 
+                            rowHeight={35}
+                            getRowId={(row) => row._id}
+                            components={{
+                                Toolbar: GridToolbar,
+                            }}
+                            onRowClick={(data) => push(`/school/${data.id}`)}
+                            columns={[
+                                { 
+                                    field: 'schoolId', 
+                                    headerName: 'School ID',
+                                    flex: .3,
+                                    minWidth: 100,
+                                },
+                                { 
+                                    field: 'name', 
+                                    headerName: 'School',
+                                    flex: 1,
+                                    minWidth: 200, 
+                                },
+                                { 
+                                    field: 'region', 
+                                    headerName: 'Region',
+                                    flex: .2,
+                                    minWidth: 50, 
+                                },
+                                { 
+                                    field: 'division', 
+                                    headerName: 'Division',
+                                    flex: .5,
+                                    minWidth: 200, 
+                                },
+                            ]}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            pagination
+                            pageSize={pageSize}
+                            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                        />
+                        )
+                    }
                 </div>
                 <TableContainer component={Paper}>
                     <Table  size="small" >
@@ -114,7 +162,7 @@ const NewSchoolModal = ({open, onClose, refreshList}) => {
             <DialogTitle>Add New User Account</DialogTitle>
             <DialogContent>
                 <Grid container spacing={2} xs={12}>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <TextField
                             size="small"
                             margin="normal"
@@ -129,21 +177,8 @@ const NewSchoolModal = ({open, onClose, refreshList}) => {
                             helperText={errors.schoolId}
                         />
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            size="small"
-                            margin="normal"
-                            required fullWidth
-                            label="School Name"
-                            name="name"
-                            value={values.name}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={errors.name}
-                            helperText={errors.name}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
+                    
+                    <Grid item xs={4}>
                         <TextField
                             size="small"
                             margin="normal"
@@ -157,7 +192,7 @@ const NewSchoolModal = ({open, onClose, refreshList}) => {
                             helperText={errors.region}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={4}>
                         <TextField
                             size="small"
                             margin="normal"
@@ -171,7 +206,20 @@ const NewSchoolModal = ({open, onClose, refreshList}) => {
                             helperText={errors.division}
                         />
                     </Grid>
-                    
+                    <Grid item xs={12}>
+                        <TextField
+                            size="small"
+                            margin="normal"
+                            required fullWidth
+                            label="School Name"
+                            name="name"
+                            value={values.name}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={errors.name}
+                            helperText={errors.name}
+                        />
+                    </Grid>
                 </Grid>   
             </DialogContent>
             <DialogActions>

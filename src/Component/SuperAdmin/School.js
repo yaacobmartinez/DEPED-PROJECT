@@ -46,8 +46,8 @@ function School() {
     )
 }
 
-const SchoolDetails = ({school}) => {
-    const {push} = useHistory()
+export const SchoolDetails = ({school}) => {
+    const {goBack} = useHistory()
     const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
         initialValues: school, 
         validationSchema: Yup.object({
@@ -63,7 +63,7 @@ const SchoolDetails = ({school}) => {
        onSubmit : async values => {
             const res = await axios.put(`/schools/${values._id}`, values)
             console.log(res.data)
-            return push('/control-panel/schools')
+            return goBack()
        }
       })
     
