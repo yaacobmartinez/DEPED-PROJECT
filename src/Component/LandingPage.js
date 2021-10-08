@@ -196,7 +196,8 @@ const RegisterComponent = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      school : ''
+      school : '', 
+      lrn: ''
     }, 
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -217,15 +218,20 @@ const RegisterComponent = () => {
         .required('Passwords must match')
         .oneOf([Yup.ref("password"), null], "Passwords must match"),
       school: Yup.string()
-          .required('We need to know which school are you enrolling.')
-    }), 
-    onSubmit:  async values => {
+          .required('We need to know which school are you enrolling.'),
+      lrn: Yup.string()
+          .matches(/^[0-9]+$/, "Must be only digits")
+          .max(12, "LRN must be 12 digits")
+          .required('Please provide a valid LRN'),
+      }), 
+    onSubmit:  async (values, {resetForm}) => {
       const {data} = await axios.post('/users',values)
       console.log(data)
       setMessage(data.success 
           ? 'Your account has been created. Please wait for within 24-48 hours for your account to be approved before you can log in.' 
           : data.message )
       setSuccess(data.success ? 'success' : 'error')
+      resetForm()
     }
   })
   return (
@@ -305,6 +311,7 @@ const RegisterComponent = () => {
             <FormControl fullWidth focused>
                 <InputLabel shrink={true}>School</InputLabel>
                 <Select
+
                     size="small"
                     value={values.school}
                     label="School"
@@ -313,11 +320,27 @@ const RegisterComponent = () => {
                     name="school"
                 >
                     {schools?.map((school) => (
-                        <MenuItem value={school._id}>{school.name}</MenuItem>
+                        <MenuItem value={school._id} PaperProps={{
+                          style: {
+                            maxHeight: 500,
+                          },
+                        }}>{school.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
           )}
+          <TextField
+            size="small"
+            margin="normal"
+            required fullWidth
+            label="Learner Reference Number (LRN)"
+            name="lrn"
+            value={values.lrn}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.lrn}
+            helperText={errors.lrn}
+          />
           <FormControlLabel
             value="terms-condition"
             control={<Checkbox />}
