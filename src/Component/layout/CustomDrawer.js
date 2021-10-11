@@ -41,6 +41,23 @@ const facultyMenu = [
         link: '/faculty/forms'
     },
 ]
+const studentMenu = [
+    {
+        name: 'Home', 
+        icon: <Home />,
+        link: '/student'
+    },
+    {
+        name: 'My Classes', 
+        icon: <Book />,
+        link: '/student/classes'
+    },
+    {
+        name: 'Forms', 
+        icon: <ListAlt />,
+        link: '/student/forms'
+    },
+]
 const adminMenu = [
     {
         name: 'Home', 
@@ -93,7 +110,10 @@ function CustomDrawer() {
                 {user.access_level === 4096 && superadminMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
-                {user.access_level === 3 && facultyMenu.map((item, index) => (
+                {user.access_level === 3 && studentMenu.map((item, index) => (
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                ))}
+                {user.access_level === 2 && facultyMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
                 {user.access_level === 2048 && adminMenu.map((item, index) => (
