@@ -1,9 +1,8 @@
-import { AccountCircle, Book, Home, Inbox, ListAlt, Mail, Settings } from '@mui/icons-material';
+import {  Book, Home,  ListAlt,  Settings } from '@mui/icons-material';
 import { Avatar, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
-import { green } from '@mui/material/colors';
 const drawerWidth = 300;
 
 function Dashboard() {

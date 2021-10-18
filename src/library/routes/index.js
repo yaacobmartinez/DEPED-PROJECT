@@ -5,7 +5,6 @@ import { Redirect, Route } from 'react-router'
 
 export const AppRoute = ({ component: Component, ...rest}) => {
     const user = JSON.parse(sessionStorage.getItem('user'))
-    console.log(user)
     return (
         <Route
 			{...rest}
@@ -65,7 +64,6 @@ export const AppRoute = ({ component: Component, ...rest}) => {
 }
 export const StudentRoute = ({ component: Component, ...rest}) => {
     const user = JSON.parse(sessionStorage.getItem('user'))
-    console.log(user)
     return (
         <Route
 			{...rest}
@@ -103,7 +101,6 @@ export const StudentRoute = ({ component: Component, ...rest}) => {
 }
 export const TeacherRoute = ({ component: Component, ...rest}) => {
     const user = JSON.parse(sessionStorage.getItem('user'))
-	console.log(user)
     return (
         <Route
 			{...rest}

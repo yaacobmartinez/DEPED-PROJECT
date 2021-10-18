@@ -1,13 +1,12 @@
 import React from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
-import { Button, CssBaseline, Grid, Switch, TextField, Toolbar, Typography } from '@mui/material'
+import {  CssBaseline,  Switch,  Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer from '../layout/CustomDrawer'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getFullName, returnAccessLevelString } from '../utils/functions'
-import { Link } from 'react-router-dom'
 import { ProvisionDialog } from '../SuperAdmin/Users'
 
 function Faculty() {
@@ -21,7 +20,7 @@ function Faculty() {
             console.log(res.data)
             setUsers(res.data.users)
         },
-    [])
+    [user.school])
 
     React.useEffect(() => {
         getUsers()

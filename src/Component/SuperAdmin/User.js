@@ -59,7 +59,7 @@ function User() {
 
 const UserDetails = ({user, schools}) => {
 
-    const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
+    const {errors, handleChange, values, handleBlur} = useFormik({
         initialValues: user, 
         validationSchema: Yup.object({
           firstName: Yup.string()

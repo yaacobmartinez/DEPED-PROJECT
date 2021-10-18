@@ -1,4 +1,4 @@
-import { AccountBalance, AccountCircle, Book, Campaign, Description, Home, ListAlt, Person, Settings, SupervisedUserCircle, SupervisorAccount } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Book, Campaign, Description, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
@@ -6,7 +6,7 @@ import React from 'react'
 import { useHistory } from 'react-router';
 const drawerWidth = 300;
 
-const superadminMenu = [
+export const superadminMenu = [
     {
         name: 'Home', 
         icon: <Home />,
@@ -24,7 +24,7 @@ const superadminMenu = [
     },
 ]
 
-const facultyMenu = [
+export const facultyMenu = [
     {
         name: 'Home', 
         icon: <Home />,
@@ -41,7 +41,7 @@ const facultyMenu = [
         link: '/faculty/forms'
     },
 ]
-const studentMenu = [
+export const studentMenu = [
     {
         name: 'Home', 
         icon: <Home />,
@@ -57,8 +57,13 @@ const studentMenu = [
         icon: <ListAlt />,
         link: '/student/forms'
     },
+    {
+        name: 'Profile', 
+        icon: <PermIdentity/>,
+        link: '/student/profile'
+    },
 ]
-const adminMenu = [
+export const adminMenu = [
     {
         name: 'Home', 
         icon: <Home />,
@@ -85,6 +90,11 @@ const adminMenu = [
         link: '/admin/forms'
     },
     {
+        name: 'Classes', 
+        icon: <ListAlt />,
+        link: '/admin/classes'
+    },
+    {
         name: 'Announcements', 
         icon: <Campaign />,
         link: '/admin/announcements'
@@ -98,10 +108,11 @@ function CustomDrawer() {
         <Drawer
             variant="permanent"
             sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-            }}
+                width: drawerWidth,
+                flexShrink: 0,
+                display: { xs: 'none', md: 'block' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              }}
         >
         <Toolbar />
             <Box sx={{ overflow: 'auto' }}>

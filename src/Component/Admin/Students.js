@@ -1,18 +1,15 @@
 import React from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
-import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
+import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer from '../layout/CustomDrawer'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getFullName, returnAccessLevelString } from '../utils/functions'
-import { Link } from 'react-router-dom'
-import { DesktopDatePicker } from '@mui/lab'
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
+import {Link} from 'react-router-dom'
 
 function Students() {
     const user = fetchFromStorage('user')
@@ -25,7 +22,7 @@ function Students() {
             console.log(res.data)
             setUsers(res.data.users)
         },
-    [])
+    [user.school])
 
     React.useEffect(() => {
         getUsers()
@@ -67,7 +64,7 @@ function Students() {
                                     sortable: false,
                                     renderCell: cell => {
                                         return (
-                                            <Typography variant="body2" color="black" sx={{textDecoration: 'none'}}>{cell.value}</Typography>
+                                            <Typography variant="body2" component={Link} to={`/student/${cell.id}`} color="black" sx={{textDecoration: 'none'}}>{cell.value}</Typography>
                                         )
                                     }
                                 },
@@ -114,6 +111,7 @@ const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(false)
         const res = await axiosInstance.post(`/users/provision/${id}`, 
         {
             provision: !user.provisioned, 
@@ -165,7 +163,7 @@ const GrantAccessDialog = ({user, open, onClose, parentClose, refreshList}) => {
         const {data} = await axiosInstance.get(`/studentrecords/byaccount/${user._id}`)
         console.log(data)
         setStudentData({...user, lrn: data.student.lrn})
-    }, [user._id])
+    }, [user])
     
     React.useEffect(() => {
         getStudentRecord()
@@ -221,8 +219,10 @@ export const UpdateStudentForm = ({student, closeModal}) => {
                 .required('Birth Date is required'),
             motherTongue: Yup.string(),
             IP: Yup.string(),
-            grade_level: Yup.string(),
-            section: Yup.string(),
+            grade_level: Yup.string()
+                .required('Grade Level is required'),
+            section: Yup.string()
+                .required('Section is required'),
         }), 
         onSubmit:  async (values, {resetForm}) => {
             console.log(values)
@@ -350,11 +350,15 @@ export const UpdateStudentForm = ({student, closeModal}) => {
                         onBlur={handleBlur}
                         name="grade_level"
                         label="Grade Level"
+                        error={errors.grade_level}
                     >
                         {Array.from(new Array(6)).map((el, index) => (
                             <MenuItem value={index + 1}>{index + 1}</MenuItem>
                         ))}
                     </Select>
+                    {errors.grade_level && (
+                        <FormHelperText error>{errors.grade_level}</FormHelperText>
+                    )}
                 </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -363,6 +367,8 @@ export const UpdateStudentForm = ({student, closeModal}) => {
                     value={values.section}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    error={errors.section}
+                    helperText={errors.section}
                 />
             </Grid>
             <Grid item xs={12}>

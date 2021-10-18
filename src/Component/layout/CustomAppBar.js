@@ -54,7 +54,7 @@ export const AuthenticatedAppBar = () => {
                     onClose={handleClose}
                 >
                     <MenuList dense sx={{width: 200}}>
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={() => push('/student/profile')}>
                             <ListItemIcon>
                                 <AccountCircle fontSize="small" />
                             </ListItemIcon>

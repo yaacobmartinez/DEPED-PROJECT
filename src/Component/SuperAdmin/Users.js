@@ -1,9 +1,8 @@
 import { Add } from '@mui/icons-material';
-import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Toolbar, Typography } from '@mui/material';
+import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
-import { useHistory } from 'react-router';
 import CustomDrawer from '../layout/CustomDrawer';
 import axios from '../../library/axios'
 import { getFullName, returnAccessLevelString } from '../utils/functions';
@@ -133,6 +132,7 @@ export const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(false)
         const res = await axios.post(`/users/provision/${id}`, 
         {
             provision: !user.provisioned, 

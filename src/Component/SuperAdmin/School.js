@@ -48,7 +48,7 @@ function School() {
 
 export const SchoolDetails = ({school}) => {
     const {goBack} = useHistory()
-    const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
+    const {errors, handleChange, values,  handleSubmit} = useFormik({
         initialValues: school, 
         validationSchema: Yup.object({
             schoolId: Yup.number()

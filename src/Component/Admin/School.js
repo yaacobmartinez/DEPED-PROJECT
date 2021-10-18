@@ -1,13 +1,10 @@
-import { Button, CssBaseline, Grid, TextField, Toolbar, Typography } from '@mui/material'
+import {  CssBaseline,   Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useFormik } from 'formik'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer from '../layout/CustomDrawer'
-import * as Yup from 'yup';
 import { SchoolDetails } from '../SuperAdmin/School'
 
 function School() {

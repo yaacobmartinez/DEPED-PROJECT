@@ -2,13 +2,10 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, InputLabel, MenuItem, Paper, Select, Snackbar, TextField, Toolbar} from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
+import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, InputLabel, MenuItem, Paper, Select, Snackbar, TextField } from '@mui/material';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import CustomAppBar from './layout/CustomAppBar';
 import CustomCarousel from './layout/CustomCarousel';
-import { PublicTwoTone, Title, YouTube } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from '../library/axios'
@@ -82,6 +79,7 @@ const LoginComponent = () => {
           return push('/change-password')
         }
         if (data.user.access_level === 3) {
+          saveToStorage('student_record', data.studentRecord)
           return push('/student')
         } 
         if (data.user.access_level === 2) {
