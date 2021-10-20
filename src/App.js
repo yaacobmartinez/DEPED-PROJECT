@@ -21,6 +21,7 @@ import Schools from './Component/SuperAdmin/Schools';
 import School from './Component/SuperAdmin/School';
 import ChangePassword from './Component/ChangePassword';
 import ClassPerSection from './Component/Admin/ClassPerSection';
+import ClassListOfStudents from './Component/Admin/ClassListOfStudents';
 
 const theme = createTheme({
   typography: {
@@ -64,6 +65,7 @@ function App() {
               <AdminRoute exact path="/admin/grade" component={ClassPerGrade} />
               <AdminRoute exact path="/admin/section" component={ClassPerSection} />
               <AdminRoute exact path="/student/:id" component={AdminStudent} />
+              <AdminRoute exact path="/class/:id" component={ClassListOfStudents} />
               
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />
