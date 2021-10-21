@@ -3,7 +3,8 @@ import { CssBaseline, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
-import CustomDrawer from '../layout/CustomDrawer';
+import CustomBottomBar from '../layout/CustomBottomBar';
+import CustomDrawer, { superadminMenu } from '../layout/CustomDrawer';
 
 function Dashboard() {
     return (
@@ -15,6 +16,7 @@ function Dashboard() {
                 <Toolbar />
                 <Typography variant="h6">Good day.</Typography>
             </Box>
+            <CustomBottomBar menu={superadminMenu} />
             </Box>
     )
 }

@@ -5,8 +5,9 @@ import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { studentMenu } from '../layout/CustomDrawer'
 import axiosInstance from '../../library/axios'
+import CustomBottomBar from '../layout/CustomBottomBar'
 function Profile() {
     const user = fetchFromStorage('user')
 
@@ -30,6 +31,7 @@ function Profile() {
                     <StudentProfileForm profile={studentProfile} user={user} />
                 )}
             </Box>
+            <CustomBottomBar menu={studentMenu} />
         </Box>
     )
 }

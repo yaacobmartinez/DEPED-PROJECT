@@ -1,5 +1,5 @@
 import { Add, ChevronRight, GridView, ViewList } from '@mui/icons-material';
-import { Button, Card, CardActionArea, CardMedia, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemText, MenuItem, Select, TextField, Toolbar, Typography } from '@mui/material';
+import { Button, Card, CardActionArea, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemText, MenuItem, Select, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useFormik } from 'formik';
 import React, { useCallback, useEffect, useState } from 'react'
@@ -135,7 +135,6 @@ const ClassCard = ({c}) => {
 }
 
 const NewClassDialog = ({grade, section, open, onClose, onChange, teachers}) => {
-    const user = fetchFromStorage('user')
     const yearNow = new Date().getFullYear()
     const currentSY = `${yearNow} - ${yearNow + 1}`
     const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({

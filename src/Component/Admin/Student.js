@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import axiosInstance from '../../library/axios'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomBottomBar from '../layout/CustomBottomBar'
+import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
 import { StudentProfileForm } from '../Student/Profile'
 
 function Student() {
@@ -35,6 +36,7 @@ function Student() {
                     <StudentProfileForm profile={studentProfile} user={user} />
                 )}
             </Box>
+            <CustomBottomBar menu={adminMenu} />
         </Box>
     )
 }

@@ -3,7 +3,7 @@ import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle,
 import { Box } from '@mui/system';
 import React from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
-import CustomDrawer from '../layout/CustomDrawer';
+import CustomDrawer, { superadminMenu } from '../layout/CustomDrawer';
 import axios from '../../library/axios'
 import { getFullName, returnAccessLevelString } from '../utils/functions';
 import { useFormik } from 'formik';
@@ -12,6 +12,7 @@ import { AlertDialog } from '../LandingPage';
 import { accountsAvailable } from '../utils/constants';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
+import CustomBottomBar from '../layout/CustomBottomBar';
 
 
 function Users() {
@@ -122,6 +123,7 @@ function Users() {
                     )}
                 </div>
             </Box>
+            <CustomBottomBar menu={superadminMenu} />
             </Box>
     )
 }
@@ -165,11 +167,10 @@ export const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     )
 }
 
-const NewUserModal = ({open, onClose, refreshList, schools}) => {
+export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) => {
     const [message, setMessage] = React.useState(null)
     const [success, setSuccess] = React.useState("error")
     const [loading, setLoading] = React.useState(false)
-    
     const now = new Date()
     const defaultPassword = "DEPED" + (now.getUTCMonth() + 1) + "" + now.getDate()  + "" + now.getFullYear()
     const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
@@ -271,9 +272,15 @@ const NewUserModal = ({open, onClose, refreshList, schools}) => {
                                 onBlur={handleBlur}
                                 name="access_level"
                             >
-                                {accountsAvailable.map((account) => (
+                                { !restricted && accountsAvailable.map((account) => (
                                     <MenuItem value={account.value}>{account.text}</MenuItem>
                                 ))}
+
+                                {
+                                    restricted && (
+                                        <MenuItem value={2}>Faculty</MenuItem>
+                                    )
+                                }
                             </Select>
                         </FormControl>
                     </Grid>

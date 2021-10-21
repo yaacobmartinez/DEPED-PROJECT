@@ -1,15 +1,16 @@
 import { Add } from '@mui/icons-material'
-import { CssBaseline, Toolbar, Typography, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Dialog, DialogTitle, DialogContent, Grid, TextField, DialogActions } from '@mui/material'
+import { CssBaseline, Toolbar, Typography, Button,  Dialog, DialogTitle, DialogContent, Grid, TextField, DialogActions } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { superadminMenu } from '../layout/CustomDrawer'
 import axios from '../../library/axios'
 import * as Yup from 'yup';
 import { AlertDialog } from '../LandingPage'
 import { useHistory } from 'react-router'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
+import CustomBottomBar from '../layout/CustomBottomBar'
 
 function Schools() {
     const {push} = useHistory()
@@ -85,37 +86,9 @@ function Schools() {
                         )
                     }
                 </div>
-                <TableContainer component={Paper}>
-                    <Table  size="small" >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>School ID</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Division</TableCell>
-                                <TableCell>Region</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {schools?.map((school, index) => (
-                                <SchoolRow school={school} key={index}/>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
             </Box>
+            <CustomBottomBar menu={superadminMenu} />
         </Box>
-    )
-}
-
-const SchoolRow = ({school}) => {
-    const {push} = useHistory()
-    return (
-        <TableRow hover onClick={() => push(`/school/${school._id}`)}>
-            <TableCell>{school.schoolId}</TableCell>
-            <TableCell>{school.name}</TableCell>
-            <TableCell>{school.division}</TableCell>
-            <TableCell>{school.region}</TableCell>
-        </TableRow>
     )
 }
 

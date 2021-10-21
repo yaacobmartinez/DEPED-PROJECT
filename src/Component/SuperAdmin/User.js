@@ -3,11 +3,12 @@ import { Box } from '@mui/system'
 import React from 'react'
 import { useParams } from 'react-router'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { superadminMenu } from '../layout/CustomDrawer'
 import axios from '../../library/axios'
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { accountsAvailablePublic } from '../utils/constants'
+import CustomBottomBar from '../layout/CustomBottomBar'
 
 
 function User() {
@@ -53,6 +54,7 @@ function User() {
                 </Paper>
                 {errorFetching && 'The User you are looking for cannot be found. Try going back.'}
             </Box>
+            <CustomBottomBar menu={superadminMenu} />
         </Box>
     )
 }

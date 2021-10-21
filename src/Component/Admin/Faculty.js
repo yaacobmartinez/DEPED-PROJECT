@@ -1,24 +1,31 @@
 import React from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
-import {  CssBaseline,  Switch,  Toolbar, Typography } from '@mui/material'
+import {  Button, CssBaseline,  Switch,  Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getFullName, returnAccessLevelString } from '../utils/functions'
-import { ProvisionDialog } from '../SuperAdmin/Users'
+import { NewUserModal, ProvisionDialog } from '../SuperAdmin/Users'
+import CustomBottomBar from '../layout/CustomBottomBar'
+import { Add } from '@mui/icons-material'
 
 function Faculty() {
     const user = fetchFromStorage('user')
+    console.log(user.school)
     const [users, setUsers] = React.useState([])
     const [pageSize, setPageSize] = React.useState(10);
     const [selectedRecord, setSelectedRecord] = React.useState(null)
+    const [newFaculty, setNewFaculty] = React.useState(false)
+    const [school, setSchool] = React.useState(null)
     const getUsers = React.useCallback(
         async () => {
             const res = await axiosInstance.get(`/users?access_level=2&school=${user.school}`)
             console.log(res.data)
             setUsers(res.data.users)
+            const {data} = await axiosInstance.get(`/schools/${user.school}`)
+            setSchool(data.school)
         },
     [user.school])
 
@@ -44,6 +51,12 @@ function Faculty() {
                         />
                     )
                 }
+                {
+                    newFaculty && (
+                        <NewUserModal open={newFaculty} onClose={() => setNewFaculty(false)} refreshList={getUsers} schools={[school]} restricted={true}/>
+                    )
+                }
+                <Button size="small" color="primary" startIcon={<Add />} onClick={() => setNewFaculty(true)}>Add Faculty</Button>
                 {users && (
                     <DataGrid rows={users.filter(a => a.school === user.school)} 
                             autoHeight 
@@ -99,8 +112,12 @@ function Faculty() {
                         />
                 )}
             </Box>
+            <CustomBottomBar menu={adminMenu} />
+
         </Box>
     )
 }
+
+
 
 export default Faculty

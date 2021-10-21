@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomBottomBar from '../layout/CustomBottomBar'
+import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
 import { SchoolDetails } from '../SuperAdmin/School'
 
 function School() {
@@ -36,6 +37,7 @@ function School() {
                     <SchoolDetails school={school} />
                 )}
             </Box>
+            <CustomBottomBar menu={adminMenu} />
         </Box>
     )
 }

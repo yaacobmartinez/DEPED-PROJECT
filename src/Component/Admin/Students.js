@@ -4,12 +4,13 @@ import { fetchFromStorage } from '../../library/utilities/Storage'
 import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { getFullName, returnAccessLevelString } from '../utils/functions'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import {Link} from 'react-router-dom'
+import CustomBottomBar from '../layout/CustomBottomBar'
 
 function Students() {
     const user = fetchFromStorage('user')
@@ -101,6 +102,7 @@ function Students() {
                         />
                 )}
             </Box>
+            <CustomBottomBar menu={adminMenu} />
         </Box>
     )
 }

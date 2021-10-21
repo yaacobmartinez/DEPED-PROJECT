@@ -5,8 +5,9 @@ import React from 'react'
 import { useHistory, useParams } from 'react-router'
 import axios from '../../library/axios'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomDrawer, { superadminMenu } from '../layout/CustomDrawer'
 import * as Yup from 'yup';
+import CustomBottomBar from '../layout/CustomBottomBar'
 
 function School() {
     const {id} = useParams()
@@ -42,6 +43,7 @@ function School() {
                 </Paper>
                 {errorFetching && 'The Schoool you are looking for cannot be found. Try going back.'}
             </Box>
+            <CustomBottomBar menu={superadminMenu} />
         </Box>
     )
 }

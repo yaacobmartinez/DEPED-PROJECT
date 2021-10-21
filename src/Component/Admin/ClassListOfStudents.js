@@ -45,8 +45,6 @@ function ClassListOfStudents() {
                         ))
                     }
                 </Grid>
-
-            
             </Box>
             <CustomBottomBar menu={adminMenu} />
         </Box>
