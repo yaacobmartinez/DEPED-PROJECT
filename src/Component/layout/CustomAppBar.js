@@ -41,9 +41,9 @@ export const AuthenticatedAppBar = () => {
                 aria-label="show 17 new notifications"
                 color="inherit"
                 >
-                <Badge badgeContent={17} color="error">
+                {/* <Badge badgeContent={17} color="error">
                     <Notifications />
-                </Badge>
+                </Badge> */}
                 </IconButton>
                 <IconButton color="inherit" onClick={handleClick}>
                     <AccountCircle />

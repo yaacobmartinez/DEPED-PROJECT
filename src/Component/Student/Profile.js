@@ -39,6 +39,8 @@ function Profile() {
 export const StudentProfileForm = ({profile, user}) => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
+    const [sections, setSections] = useState([])
+    
     const initialAddress = {
         houseNo: profile?.address?.houseNo || '',
         barangay: profile?.address?.barangay ||'',
@@ -81,6 +83,13 @@ export const StudentProfileForm = ({profile, user}) => {
             return setMessage('Awesome! Account Updated.')
         }
     });
+    const getSections = React.useCallback(async() => {
+        const {data} = await axiosInstance.get(`/sections`) 
+        setSections(data.sections.filter((a) => a.grade_level === values.studentRecord.grade_level.toString()))
+    }, [values.studentRecord.grade_level])
+    useEffect(() => {
+        getSections()
+    }, [getSections])
     return (
         <Grid container spacing={2} sx={{p: 2}} component="form" onSubmit={handleSubmit}> 
             <Backdrop open={loading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -227,14 +236,33 @@ export const StudentProfileForm = ({profile, user}) => {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                        <TextField fullWidth label="Section" size="small" InputLabelProps={{shrink: true}}
+                    <FormControl fullWidth>
+                            <InputLabel shrink={true}>Section</InputLabel>
+                            <Select
+                                size="small"
+                                value={values.studentRecord.section}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                name="studentRecord.section"
+                                label="Section"
+                                // error={errors.studentRecord.grade_level}
+                            >
+                                {sections?.map((section, index) => (
+                                    <MenuItem key={index} value={section.section}>{section.section}</MenuItem>
+                                ))}
+                            </Select>
+                            {/* {errors.grade_level && (
+                                <FormHelperText error>{errors.grade_level}</FormHelperText>
+                            )} */}
+                        </FormControl>
+                        {/* <TextField fullWidth label="Section" size="small" InputLabelProps={{shrink: true}}
                             name="studentRecord.section"
                             value={values.studentRecord.section}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             // error={errors.studentRecord.section}
                             // helperText={errors.studentRecord.section}
-                        />
+                        /> */}
                     </Grid>   
                     <Grid item xs={12} sm={4}>
                         <TextField fullWidth label="Learning Modality" size="small" InputLabelProps={{shrink: true}}

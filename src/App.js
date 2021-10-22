@@ -23,6 +23,7 @@ import ChangePassword from './Component/ChangePassword';
 import ClassPerSection from './Component/Admin/ClassPerSection';
 import ClassListOfStudents from './Component/Admin/ClassListOfStudents';
 import Announcements from './Component/Admin/Announcements';
+import Classes from './Component/Student/Classes';
 
 const theme = createTheme({
   typography: {
@@ -57,6 +58,7 @@ function App() {
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
+              <StudentRoute exact path="/student/classes" component={Classes} />
               
               <AdminRoute exact path="/admin" component={AdminDashboard} />
               <AdminRoute exact path="/admin/school" component={AdminSchool} />

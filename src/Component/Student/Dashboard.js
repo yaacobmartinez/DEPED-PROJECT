@@ -1,14 +1,30 @@
 import { ExpandMore } from '@mui/icons-material';
 import { Alert, CssBaseline, Toolbar, Typography, Grid, Card, CardMedia, CardContent,  Button, CardActionArea, Accordion, AccordionSummary, AccordionDetails, AccordionActions } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
 import CustomBottomBar from '../layout/CustomBottomBar';
 import CustomDrawer, { studentMenu } from '../layout/CustomDrawer';
-
+import axiosInstance from '../../library/axios'
+import { AnnouncementCard } from '../Admin/Announcements';
+import { fetchFromStorage } from '../../library/utilities/Storage';
 function Dashboard() {
     const yearNow = new Date().getFullYear()
-    
+    const user = fetchFromStorage('user')
+    const student_record = fetchFromStorage('student_record')
+    const [announcements, setAnnouncements] = useState([])
+    const [classes, setClasses] = useState([])
+    const getAnnouncements = useCallback(async() => {
+        const {data} = await axiosInstance.get(`/announcements?school=${user.school}`)
+        setAnnouncements(data.announcements)
+        const res = await axiosInstance.get(`/classes?grade_level=${student_record.grade_level}&section=${student_record.section}&school=${user.school}`)
+        setClasses(res.data.classes)
+    },[user.school])
+
+    useEffect(() =>{
+        getAnnouncements()
+    }, [getAnnouncements])
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -22,23 +38,24 @@ function Dashboard() {
                     Current School Year  
                 </Alert>
                 <Grid container spacing={2} sx={{p: 2}}>
-                    <Grid item xs={12} md={6}>
+                    <Grid item xs={12} md={12} lg={8}>
+                        <Typography variant="h6">My Classes</Typography>
+                        <Box sx={{p: 2, width: '100%'}}>
+                            {classes?.map((c, index) => (
+                                <ClassList key={index} c={c}  />
+                            ))}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={4}>
                         <Typography variant="h6">Announcements</Typography>
                         <Grid container spacing={2}>
-                            {Array.from(new Array(5)).map((item, index) => (
-                                <AnnouncementCard announcement={index} key={index} />
+                            {announcements?.map((item, index) => (
+                                <Grid item xs={12} key={index}>
+                                    <AnnouncementCard announcement={item} />
+                                </Grid>
                             ))}
                             
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography variant="h6">My Academic Records</Typography>
-                        <Box sx={{p: 2, width: '100%'}}>
-                            {Array.from(new Array(6)).map((el, index) => (
-                                <AcademicGradeSummaryCard key={index} details={{grade_level: index + 1}} />
-                            ))}
-                            
-                        </Box>
                     </Grid>
                 </Grid>
                 <CustomBottomBar menu={studentMenu} />
@@ -47,52 +64,24 @@ function Dashboard() {
     )
 }
 
-const AnnouncementCard = ({announcement}) => {
-    return (
-    <Grid item xs={12}>
-        <CardActionArea>
-            <Card>
-                <CardMedia
-                    component="img"
-                    height="200"
-                    image="./Images/announcements/1.png"
-                    alt="sample announcement"
-                    />
-                <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                    Test Announcement {announcement}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        This is a test announcement.
-                    </Typography>
-                </CardContent>
-            </Card>
-        </CardActionArea>
-    </Grid>
-    )
-}
-
-const AcademicGradeSummaryCard = ({details}) => {
+const ClassList = ({c}) => {
     return (
             <Accordion>
                 <AccordionSummary
                     expandIcon={<ExpandMore />}
                 >
                     <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                        Grade {details.grade_level}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>
-                        {details.grade_level === 1 && 'Ongoing' }
+                        {c.className}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>
-                        Passed: Yes; Final Average Grade: 76%
+                    <Typography variant="body2">
+                       Mr./Ms. {c.teacher_info.firstName} {c.teacher_info.lastName}
+                    </Typography>
+                    <Typography variant="caption" color="GrayText">
+                    {c.start_time} - {c.end_time}
                     </Typography>
                 </AccordionDetails>
-                <AccordionActions>
-                    <Button variant="outlined" color="primary" size="small">View Details</Button>
-                </AccordionActions>
             </Accordion>
     )
 }
