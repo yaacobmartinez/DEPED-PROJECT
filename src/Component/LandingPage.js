@@ -71,7 +71,6 @@ const LoginComponent = () => {
     }), 
     onSubmit:  async values => {
       const {data} = await axios.post('/users/auth',values)
-      console.log(data)
       if (data.success) {
         saveToStorage('token', data.token)
         sessionStorage.setItem('user', JSON.stringify(data.user))

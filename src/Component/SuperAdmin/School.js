@@ -70,8 +70,8 @@ export const SchoolDetails = ({school}) => {
       })
     
     return (
-    <Grid container spacing={1} xs={8} component="form" onSubmit={handleSubmit}>
-        <Grid item xs={6}>
+    <Grid container spacing={1} xs={12} sm={12} md={8} component="form" onSubmit={handleSubmit}>
+        <Grid item xs={12} sm={6}>
         <TextField
             size="small"
             margin="normal"
@@ -87,7 +87,7 @@ export const SchoolDetails = ({school}) => {
             helperText={errors.schoolId}
         />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
         <TextField
             size="small"
             margin="normal"
@@ -102,7 +102,7 @@ export const SchoolDetails = ({school}) => {
             helperText={errors.name}
         />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
         <TextField
             size="small"
             margin="normal"
@@ -117,7 +117,7 @@ export const SchoolDetails = ({school}) => {
             helperText={errors.division}
         />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
         <TextField
             size="small"
             margin="normal"
@@ -132,7 +132,7 @@ export const SchoolDetails = ({school}) => {
             helperText={errors.region}
         />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
             <Button variant="contained" color="primary" size="small" type="submit">Save</Button>
         </Grid>
     </Grid>

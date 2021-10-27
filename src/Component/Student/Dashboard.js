@@ -15,7 +15,7 @@ function Dashboard() {
     const [announcements, setAnnouncements] = useState([])
     const [classes, setClasses] = useState([])
     const getAnnouncements = useCallback(async() => {
-        const {data} = await axiosInstance.get(`/announcements?school=${user.school}`)
+        const {data} = await axiosInstance.get(`/announcements?school=${user.school}&audience=student`)
         setAnnouncements(data.announcements)
         const res = await axiosInstance.get(`/classes?grade_level=${student_record.grade_level}&section=${student_record.section}&school=${user.school}`)
         setClasses(res.data.classes)

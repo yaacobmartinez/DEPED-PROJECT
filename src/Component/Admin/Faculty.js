@@ -13,7 +13,6 @@ import { Add } from '@mui/icons-material'
 
 function Faculty() {
     const user = fetchFromStorage('user')
-    console.log(user.school)
     const [users, setUsers] = React.useState([])
     const [pageSize, setPageSize] = React.useState(10);
     const [selectedRecord, setSelectedRecord] = React.useState(null)
@@ -22,7 +21,6 @@ function Faculty() {
     const getUsers = React.useCallback(
         async () => {
             const res = await axiosInstance.get(`/users?access_level=2&school=${user.school}`)
-            console.log(res.data)
             setUsers(res.data.users)
             const {data} = await axiosInstance.get(`/schools/${user.school}`)
             setSchool(data.school)
