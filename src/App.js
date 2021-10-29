@@ -25,6 +25,9 @@ import ClassListOfStudents from './Component/Admin/ClassListOfStudents';
 import Announcements from './Component/Admin/Announcements';
 import Classes from './Component/Student/Classes';
 import FacultyClasses from './Component/Teacher/Classes';
+import MyClasses from './Component/Teacher/MyClasses';
+import Forms from './Component/Student/Forms';
+import MyClass from './Component/Student/MyClass';
 
 const theme = createTheme({
   typography: {
@@ -57,10 +60,13 @@ function App() {
               <TeacherRoute exact path="/teacher" component={Teacher} />
               <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
               <TeacherRoute exact path="/faculty-classes/:id" component={FacultyClasses} />
+              <TeacherRoute exact path="/faculty/classes" component={MyClasses} />
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
               <StudentRoute exact path="/student/classes" component={Classes} />
+              <StudentRoute exact path="/student/forms" component={Forms} />
+              <StudentRoute exact path="/myclass/:id" component={MyClass} />
               
               <AdminRoute exact path="/admin" component={AdminDashboard} />
               <AdminRoute exact path="/admin/school" component={AdminSchool} />

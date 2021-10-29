@@ -8,6 +8,8 @@ import CustomDrawer, { studentMenu } from '../layout/CustomDrawer';
 import axiosInstance from '../../library/axios'
 import { AnnouncementCard } from '../Admin/Announcements';
 import { fetchFromStorage } from '../../library/utilities/Storage';
+import { Link } from 'react-router-dom';
+import { ClassCard } from './Classes';
 function Dashboard() {
     const yearNow = new Date().getFullYear()
     const user = fetchFromStorage('user')
@@ -38,19 +40,24 @@ function Dashboard() {
                     Current School Year  
                 </Alert>
                 <Grid container spacing={2} sx={{p: 2}}>
-                    <Grid item xs={12} md={12} lg={8}>
-                        <Typography variant="h6">My Classes</Typography>
+                    <Grid item xs={12}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <Typography variant="h6">My Classes</Typography>
+                            <Link to="/student/classes" style={{fontSize: 12}}> View All</Link>
+                        </div>
                         <Box sx={{p: 2, width: '100%'}}>
-                            {classes?.map((c, index) => (
-                                <ClassList key={index} c={c}  />
+                            {classes?.slice(0, 3).map((c, index) => (
+                                <div key={index} style={{marginBottom: 20}}>
+                                    <ClassCard c={c}  />
+                                </div>
                             ))}
                         </Box>
                     </Grid>
-                    <Grid item xs={12} md={12} lg={4}>
-                        <Typography variant="h6">Announcements</Typography>
+                    <Grid item xs={12} md={12}>
+                        <Typography variant="h6" gutterBottom>Announcements</Typography>
                         <Grid container spacing={2}>
                             {announcements?.map((item, index) => (
-                                <Grid item xs={12} key={index}>
+                                <Grid item xs={12} sm={6} key={index}>
                                     <AnnouncementCard announcement={item} />
                                 </Grid>
                             ))}

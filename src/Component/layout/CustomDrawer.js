@@ -132,12 +132,7 @@ function CustomDrawer() {
                 ))}
                 <div style={{position: 'fixed', bottom: 0, width: drawerWidth}}>
                     <Divider />
-                    <ListItem secondaryAction={
-                            <IconButton edge="end">
-                                <Settings />
-                            </IconButton>
-                        }
-                    >
+                    <ListItem>
                         <ListItemAvatar>
                             <Avatar src="/test.jpg"/>
                         </ListItemAvatar>

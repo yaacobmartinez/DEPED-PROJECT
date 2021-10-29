@@ -36,7 +36,7 @@ function Dashboard() {
                     <Grid item xs={12} md={12} lg={8}>
                         <Typography variant="h6">My Classes</Typography>
                         <Box sx={{pt: 2, pb:2, width: '100%'}}>
-                            {classes?.map((c, index) => (
+                            {classes?.slice(0,5).map((c, index) => (
                                 <ClassCard c={c} key={index} />
                             ))}
                         </Box>
@@ -59,7 +59,7 @@ function Dashboard() {
     )
 }
 
-const ClassCard = ({c})=> {
+export const ClassCard = ({c})=> {
 
     return (
         <CardActionArea component={Link} to={`/faculty-classes/${c._id}`}>
