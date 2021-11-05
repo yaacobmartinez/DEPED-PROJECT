@@ -23,11 +23,14 @@ import ChangePassword from './Component/ChangePassword';
 import ClassPerSection from './Component/Admin/ClassPerSection';
 import ClassListOfStudents from './Component/Admin/ClassListOfStudents';
 import Announcements from './Component/Admin/Announcements';
+import AdminForms from './Component/Admin/Forms';
 import Classes from './Component/Student/Classes';
 import FacultyClasses from './Component/Teacher/Classes';
 import MyClasses from './Component/Teacher/MyClasses';
+import TeacherSchoolForms from './Component/Teacher/Forms';
 import Forms from './Component/Student/Forms';
 import MyClass from './Component/Student/MyClass';
+import Notifications from './Component/Teacher/Notifications';
 
 const theme = createTheme({
   typography: {
@@ -61,11 +64,14 @@ function App() {
               <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
               <TeacherRoute exact path="/faculty-classes/:id" component={FacultyClasses} />
               <TeacherRoute exact path="/faculty/classes" component={MyClasses} />
+              <TeacherRoute exact path="/faculty/forms" component={TeacherSchoolForms} />
+              <TeacherRoute exact path="/faculty/notifications" component={Notifications} />
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
               <StudentRoute exact path="/student/classes" component={Classes} />
               <StudentRoute exact path="/student/forms" component={Forms} />
+              <StudentRoute exact path="/student/notifications" component={Notifications} />
               <StudentRoute exact path="/myclass/:id" component={MyClass} />
               
               <AdminRoute exact path="/admin" component={AdminDashboard} />
@@ -75,9 +81,11 @@ function App() {
               <AdminRoute exact path="/admin/classes" component={Schedules} />
               <AdminRoute exact path="/admin/grade" component={ClassPerGrade} />
               <AdminRoute exact path="/admin/section" component={ClassPerSection} />
+              <AdminRoute exact path="/admin/notifications" component={Notifications} />
               <AdminRoute exact path="/student/:id" component={AdminStudent} />
               <AdminRoute exact path="/class/:id" component={ClassListOfStudents} />
               <AdminRoute exact path="/admin/announcements" component={Announcements} />
+              <AdminRoute exact path="/admin/forms" component={AdminForms} />
               
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />

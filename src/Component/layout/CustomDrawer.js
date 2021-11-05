@@ -1,9 +1,10 @@
-import { AccountBalance, AccountCircle, Book, Campaign, Description, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Book, Campaign, Description, Event, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
 import React from 'react'
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 const drawerWidth = 300;
 
 export const superadminMenu = [
@@ -130,6 +131,12 @@ function CustomDrawer() {
                 {user.access_level === 2048 && adminMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
+                <ListItem button component="a" href="https://calendar.google.com/" target="_blank">
+                    <ListItemIcon>
+                        <Event />
+                    </ListItemIcon>
+                    <ListItemText primary={<Typography variant="subtitle2">Calendar</Typography>} />
+                </ListItem>
                 <div style={{position: 'fixed', bottom: 0, width: drawerWidth}}>
                     <Divider />
                     <ListItem>

@@ -17,6 +17,13 @@ export const returnAccessLevelString = (access_level) => {
     return access_level_string
 }
 
+export const isForStudent = (value) => {
+    if (value === 3 || value === 4 || value === 5) {
+        return true
+    }
+    return false
+}
+
 export const getFullName = (params) => {
     return `${params.getValue(params.id, 'firstName') || ''} ${
       params.getValue(params.id, 'lastName') || ''

@@ -4,6 +4,7 @@ import { Box } from '@mui/system'
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 
@@ -55,6 +56,25 @@ export const AuthenticatedAppBar = () => {
         console.log(data)
         getNotifications()
     }
+
+    const allNotificationLink = (access_level) => {
+        let access_level_string = ""
+        switch (access_level) {
+            case 2048:
+                access_level_string = '/admin/notifications'
+                break;
+            case 4096:
+                access_level_string = '/control-panel/notifications'
+                break;
+            case 2:
+                access_level_string = '/faculty/notifications'
+                break;
+            default:
+                access_level_string = '/student/notifications'
+                break;
+        }
+        return access_level_string
+    }
     return (
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B'}}>
             <Toolbar>
@@ -83,7 +103,7 @@ export const AuthenticatedAppBar = () => {
                     }}
                     >
                     <List>
-                        {notifications?.map((notification) => (
+                        {notifications?.slice(0,4).map((notification) => (
                             <ListItem button dense style={{background: notification.read ? '#fff' : '#cbeef3'}}
                                 onClick={() => {
                                         handleRead(notification._id)
@@ -105,7 +125,7 @@ export const AuthenticatedAppBar = () => {
                             </ListItem>
                         ))}
                         <Divider />
-                        <ListItem button dense>
+                        <ListItem button dense component={Link} to={allNotificationLink(user.access_level)} >
                             <ListItemText 
                                 primary={
                                     <Typography variant="caption" color="GrayText">View all notifications</Typography>
