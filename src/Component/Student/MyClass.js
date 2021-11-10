@@ -28,9 +28,18 @@ function MyClass() {
         getCurrentClass()
     },[getCurrentClass])
     const handleDownload = async (path) => {
-        const {data} = await axiosInstance.get(`/modules/download?path=${path}`)
-        console.log(data.link)
-        window.open(data.link, '_blank')
+        var fileExt = path.split('.').pop();
+        if (fileExt === 'pdf') {
+            const {data} = await axiosInstance.get(`/modules/stream?path=${path}`, {responseType: 'blob'})
+            const file = new Blob(
+                [data], 
+                {type: 'application/pdf'});
+          
+            const fileURL = URL.createObjectURL(file);
+            return window.open(fileURL)
+        } 
+        const res = await axiosInstance.get(`/modules/download?path=${path}`)
+        window.open(res.data.link, '_blank' )
     }
     return (
         <Box sx={{ display: 'flex' }}>

@@ -27,6 +27,7 @@
     "react-scripts": "4.0.3",
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",
+    "react.pdf.stream": "^0.0.0-beta-14",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.9"
   },
