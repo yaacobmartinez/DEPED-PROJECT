@@ -1,4 +1,4 @@
-import { AccountBalance, AccountCircle, Book, Campaign, Description, Event, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Book, Campaign, Description, DescriptionOutlined, Event, History, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
@@ -54,8 +54,8 @@ export const studentMenu = [
         link: '/student/classes'
     },
     {
-        name: 'Forms', 
-        icon: <ListAlt />,
+        name: 'Document Request', 
+        icon: <DescriptionOutlined />,
         link: '/student/forms'
     },
     {
@@ -100,6 +100,16 @@ export const adminMenu = [
         icon: <Campaign />,
         link: '/admin/announcements'
     },
+    {
+        name: 'Activity Logs', 
+        icon: <History />,
+        link: '/admin/logs'
+    },
+    {
+        name: 'Document Requests',
+        icon: <DescriptionOutlined />,
+        link: '/admin/requests'
+    },
 ]
 
 function CustomDrawer() {
@@ -111,6 +121,7 @@ function CustomDrawer() {
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
+                zIndex: -1,
                 display: { xs: 'none', md: 'block' },
                 '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
               }}

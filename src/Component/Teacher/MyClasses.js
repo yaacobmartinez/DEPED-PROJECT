@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomBottomBar from '../layout/CustomBottomBar'
+import CustomDrawer, { facultyMenu } from '../layout/CustomDrawer'
 import { ClassCard } from './Dashboard'
 
 function MyClasses() {
@@ -37,6 +38,7 @@ function MyClasses() {
                     </Grid>
                 </Grid>
             </Box>
+            <CustomBottomBar menu={facultyMenu} />
         </Box>
     )
 }

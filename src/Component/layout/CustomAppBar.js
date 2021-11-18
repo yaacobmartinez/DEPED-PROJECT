@@ -76,7 +76,7 @@ export const AuthenticatedAppBar = () => {
         return access_level_string
     }
     return (
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B'}}>
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} style = {{background: '#034F8B', zIndex: 1}}>
             <Toolbar>
                 <img src = "../depedicon.png" alt="logo" style={{height: '50px', }}/>
                 <Box sx={{flexGrow: 1}} />

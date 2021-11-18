@@ -7,7 +7,8 @@ import { useDropzone } from 'react-dropzone'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
-import CustomDrawer from '../layout/CustomDrawer'
+import CustomBottomBar from '../layout/CustomBottomBar'
+import CustomDrawer, { facultyMenu } from '../layout/CustomDrawer'
 import { schoolForms } from '../utils/constants'
 import { formatBytes, isForStudent } from '../utils/functions'
 
@@ -116,6 +117,7 @@ function Forms() {
                     />
                 )}
             </Box>
+            <CustomBottomBar menu={facultyMenu} />
         </Box>
     )
 }

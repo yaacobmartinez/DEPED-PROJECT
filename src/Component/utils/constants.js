@@ -52,27 +52,15 @@ export const accountsAvailablePublic = [
 
 export const schoolForms = [
   {
-    name: 'SF1 (School Register)',
+    name: 'School Form',
     value: 0
   },
   {
-    name: 'SF2 (Learners Daily Class Attendance)',
+    name: 'Admin Forms',
     value: 1
   },
   {
-    name: 'SF5 (Report on Promotion)',
+    name: 'Others',
     value: 2
-  },
-  {
-    name: 'SF9 (Learner Progress Report Card / Form 138)',
-    value: 3
-  },
-  {
-    name: 'SF10 (Learners Permanent Academic Record / Form 137)',
-    value: 4
-  },
-  {
-    name: 'PDS (Personal Data Sheet)',
-    value: 5
   },
 ]

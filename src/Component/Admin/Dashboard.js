@@ -48,7 +48,7 @@ function Dashboard() {
                             <TotalCard color="#05f140" total={schoolStats?.female} title={`Female`} icon={<Female />} />
                         </Grid>
                     </Grid>
-                    )}
+                )}
                 <Grid container spacing={2} style={{marginTop: 2}}>
                     <Grid item md={12} lg={8} container spacing={2}>
                         {announcements?.map((announcement, index) => (

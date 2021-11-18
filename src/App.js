@@ -31,6 +31,8 @@ import TeacherSchoolForms from './Component/Teacher/Forms';
 import Forms from './Component/Student/Forms';
 import MyClass from './Component/Student/MyClass';
 import Notifications from './Component/Teacher/Notifications';
+import Logs from './Component/Admin/Logs';
+import Requests from './Component/Admin/Requests';
 
 const theme = createTheme({
   typography: {
@@ -86,6 +88,8 @@ function App() {
               <AdminRoute exact path="/class/:id" component={ClassListOfStudents} />
               <AdminRoute exact path="/admin/announcements" component={Announcements} />
               <AdminRoute exact path="/admin/forms" component={AdminForms} />
+              <AdminRoute exact path="/admin/logs" component={Logs} />
+              <AdminRoute exact path="/admin/requests" component={Requests} />
               
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />
