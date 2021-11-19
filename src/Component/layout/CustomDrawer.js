@@ -121,7 +121,6 @@ function CustomDrawer() {
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
-                zIndex: -1,
                 display: { xs: 'none', md: 'block' },
                 '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
               }}
