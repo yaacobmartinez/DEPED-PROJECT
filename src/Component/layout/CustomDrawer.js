@@ -121,6 +121,7 @@ function CustomDrawer() {
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
+                zIndex: 0, 
                 display: { xs: 'none', md: 'block' },
                 '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
               }}
@@ -141,12 +142,14 @@ function CustomDrawer() {
                 {user.access_level === 2048 && adminMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
-                <ListItem button component="a" href="https://calendar.google.com/" target="_blank">
-                    <ListItemIcon>
-                        <Event />
-                    </ListItemIcon>
-                    <ListItemText primary={<Typography variant="subtitle2">Calendar</Typography>} />
-                </ListItem>
+                {user.access_level !== 3 && (
+                    <ListItem button component="a" href="https://calendar.google.com/" target="_blank">
+                        <ListItemIcon>
+                            <Event />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle2">Calendar</Typography>} />
+                    </ListItem>
+                )}
                 <div style={{position: 'fixed', bottom: 0, width: drawerWidth}}>
                     <Divider />
                     <ListItem>

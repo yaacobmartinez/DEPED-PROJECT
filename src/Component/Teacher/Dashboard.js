@@ -97,23 +97,6 @@ export const ClassCard = ({c})=> {
                 </CardContent>
             </Card>
         </CardActionArea>
-        // <Accordion>
-        //     <AccordionSummary
-        //         expandIcon={<ExpandMore />}
-        //     >
-        //         <Typography sx={{ width: '33%', flexShrink: 0 }}>
-        //             {c.className}
-        //         </Typography>
-        //     </AccordionSummary>
-        //     <AccordionDetails>
-        //         <Typography variant="body2">
-        //             Grade {c.grade_level} - {c.section}
-        //         </Typography>
-        //         <Typography variant="caption" color="GrayText">
-        //         {c.start_time} - {c.end_time}
-        //         </Typography>
-        //     </AccordionDetails>
-        // </Accordion>
     )
 }
 
@@ -135,15 +118,18 @@ const AnnouncementCard = ({item}) => {
         setCurrentImage(index);
         setIsViewerOpen(true);
       }, []);
-
-    const closeImageViewer = () => {
+    
+      const closeImageViewer = () => {
         setCurrentImage(0);
         setIsViewerOpen(false);
-    };
+      };
+
     useEffect(() => {
         getLinks()
     }, [getLinks])
+    console.log(isViewerOpen)
     return (
+        <>
         <Grid item xs={12} sm={3} style={{cursor: 'pointer'}} onClick={() => openImageViewer(0)}>
             <Box style={{background: '#eee', width:'200', height: 200, borderRadius: 10}}>
                 <img src={links[0]} alt={links[0]} style={{borderRadius: 10, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'left'}} />
@@ -152,16 +138,20 @@ const AnnouncementCard = ({item}) => {
             <Typography variant="caption" color="textSecondary" style={{fontSize: 12, paddingLeft: 3}}>
                 {formatDistanceToNowStrict(new Date(item.date_created), { addSuffix: true })}
             </Typography>
+        </Grid>
             {isViewerOpen && (
                 <ImageViewer
                     src={links}
                     currentIndex={currentImage}
                     disableScroll={ false }
-                    closeOnClickOutside={ true }
-                    onClose={ () => setIsViewerOpen(false) }
+                    closeOnClickOutside={true}
+                    backgroundStyle={{
+                        backgroundColor: "rgba(0,0,0,0.7)"
+                    }}
+                    onClose={closeImageViewer}
                 />
             )}
-        </Grid>
+        </>
     )
 }
 export default Dashboard

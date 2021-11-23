@@ -6,10 +6,12 @@ import { AuthenticatedAppBar } from '../layout/CustomAppBar';
 import CustomBottomBar from '../layout/CustomBottomBar';
 import CustomDrawer, { studentMenu } from '../layout/CustomDrawer';
 import axiosInstance from '../../library/axios'
-import { AnnouncementCard } from '../Admin/Announcements';
 import { fetchFromStorage } from '../../library/utilities/Storage';
 import { Link } from 'react-router-dom';
 import { ClassCard } from './Classes';
+import ImageViewer from 'react-simple-image-viewer';
+import { formatDistanceToNowStrict } from 'date-fns';
+
 function Dashboard() {
     const yearNow = new Date().getFullYear()
     const user = fetchFromStorage('user')
@@ -40,6 +42,16 @@ function Dashboard() {
                     Current School Year  
                 </Alert>
                 <Grid container spacing={2} sx={{p: 2}}>
+                    <Grid item xs={12} md={12}>
+                        <Typography variant="h6" gutterBottom>Announcements</Typography>
+                        <Grid container spacing={2}>
+                            {announcements?.map((item, index) => (
+                                <AnnouncementCard item={item} />
+                            ))}
+                            
+                        </Grid>
+                    </Grid>
+
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                             <Typography variant="h6">My Classes</Typography>
@@ -53,21 +65,66 @@ function Dashboard() {
                             ))}
                         </Box>
                     </Grid>
-                    <Grid item xs={12} md={12}>
-                        <Typography variant="h6" gutterBottom>Announcements</Typography>
-                        <Grid container spacing={2}>
-                            {announcements?.map((item, index) => (
-                                <Grid item xs={12} sm={6} key={index}>
-                                    <AnnouncementCard announcement={item} />
-                                </Grid>
-                            ))}
-                            
-                        </Grid>
-                    </Grid>
+                    
                 </Grid>
                 <CustomBottomBar menu={studentMenu} />
             </Box>
         </Box>
+    )
+}
+
+const AnnouncementCard = ({item}) => {
+    const [currentImage, setCurrentImage] = useState(0);
+    const [isViewerOpen, setIsViewerOpen] = useState(false);
+    const [links, setLinks] = useState([])
+    const getLinks = useCallback( async () => {
+        const mediaLinks = await Promise.all(
+            item.media.map(async (a) => {
+                const {data} = await axiosInstance.get(`/announcements/image?path=${a}`)
+                return data.link
+            }
+        ));
+        setLinks(mediaLinks)
+    }, [item.media])
+
+    const openImageViewer = useCallback((index) => {
+        setCurrentImage(index);
+        setIsViewerOpen(true);
+      }, []);
+    
+      const closeImageViewer = () => {
+        setCurrentImage(0);
+        setIsViewerOpen(false);
+      };
+
+    useEffect(() => {
+        getLinks()
+    }, [getLinks])
+    console.log(isViewerOpen)
+    return (
+        <>
+        <Grid item xs={12} sm={3} style={{cursor: 'pointer'}} onClick={() => openImageViewer(0)}>
+            <Box style={{background: '#eee', width:'200', height: 200, borderRadius: 10, border: 'solid 1px #e1e1e1'}} sx={{boxShadow: 5}}>
+                <img src={links[0]} alt={links[0]} style={{borderRadius: 10, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'left'}} />
+            </Box>
+            <Typography variant="body2" style={{fontSize: 14, paddingTop: 10, paddingLeft: 3}}>{item.title}</Typography>
+            <Typography variant="caption" color="textSecondary" style={{fontSize: 12, paddingLeft: 3}}>
+                {formatDistanceToNowStrict(new Date(item.date_created), { addSuffix: true })}
+            </Typography>
+        </Grid>
+            {isViewerOpen && (
+                <ImageViewer
+                    src={links}
+                    currentIndex={currentImage}
+                    disableScroll={ false }
+                    closeOnClickOutside={true}
+                    backgroundStyle={{
+                        backgroundColor: "rgba(0,0,0,0.7)"
+                    }}
+                    onClose={closeImageViewer}
+                />
+            )}
+        </>
     )
 }
 
