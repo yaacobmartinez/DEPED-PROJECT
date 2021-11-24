@@ -1,7 +1,7 @@
 import React from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
-import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
+import { Button, Chip, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
@@ -17,6 +17,7 @@ function Students() {
     const [users, setUsers] = React.useState([])
     const [pageSize, setPageSize] = React.useState(10);
     const [selectedRecord, setSelectedRecord] = React.useState(null)
+    const [filter, setFilter] = React.useState(true)
     const getUsers = React.useCallback(
         async () => {
             const res = await axiosInstance.get(`/users?&school=${user.school}&access_level=3`)
@@ -47,8 +48,9 @@ function Students() {
                         />
                     )
                 }
+                <Button size='small' color="primary" variant="contained" onClick={() => setFilter(!filter)}>{filter ? `Show` : `Hide`} Archived Records</Button>
                 {users && (
-                    <DataGrid rows={users.filter(a => a.school === user.school)} 
+                    <DataGrid rows={users.filter(a => filter ? !a.archived : a)} 
                             autoHeight 
                             rowHeight={35}
                             getRowId={(row) => row._id}
@@ -65,7 +67,9 @@ function Students() {
                                     sortable: false,
                                     renderCell: cell => {
                                         return (
-                                            <Typography variant="body2" component={Link} to={`/student/${cell.id}`} color="black" sx={{textDecoration: 'none'}}>{cell.value}</Typography>
+                                            <Typography variant="body2" 
+                                            component={Link} to={ cell.row.provisioned ? `/student/${cell.id}` : `/admin/students`} 
+                                            color="black" sx={{textDecoration: 'none'}}>{cell.value}</Typography>
                                         )
                                     }
                                 },
@@ -82,6 +86,17 @@ function Students() {
                                     renderCell: (cellValues) => {
                                         return (
                                             <Switch readOnly checked={cellValues.value} onChange={() => setSelectedRecord(cellValues)}/>
+                                        )
+                                    }
+                                },
+                                { 
+                                    field: 'archived', 
+                                    headerName: 'Status',
+                                    width: 150, 
+                                    sortable: true,
+                                    renderCell: (cellValues) => {
+                                        return (
+                                            cellValues.value ? <Chip size="small" label="Archived" color="warning" sx={{fontSize: 10}}/> : <Chip size="small" label="Active" color="info" sx={{fontSize: 10}} />
                                         )
                                     }
                                 },
@@ -234,6 +249,16 @@ export const UpdateStudentForm = ({student, closeModal}) => {
             closeModal()
           }
     })
+    const [sections, setSections] = React.useState([])
+    const getSections = React.useCallback(async() => {
+        const {data} = await axiosInstance.get(`/sections`)
+        setSections(data.sections.filter((a) => a.grade_level === values.grade_level.toString()))
+    }, [values.grade_level])
+
+    React.useEffect(() => {
+        getSections()
+    }, [getSections])
+
     return (
         <Grid item xs={12} container spacing={2} sx={{mt: 2}}>
             <Grid item xs={12}>
@@ -364,14 +389,32 @@ export const UpdateStudentForm = ({student, closeModal}) => {
                 </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Section" size="small" InputLabelProps={{shrink: true}}
+                    <FormControl fullWidth>
+                        <InputLabel shrink={true}>Section</InputLabel>
+                        <Select
+                            size="small"
+                            value={values.section}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            name="section"
+                            label="Section"
+                        >
+                            {sections?.map((section, index) => (
+                                <MenuItem key={index} value={section.section}>{section.section}</MenuItem>
+                            ))}
+                        </Select>
+                        {/* {errors.grade_level && (
+                            <FormHelperText error>{errors.grade_level}</FormHelperText>
+                        )} */}
+                    </FormControl>
+                {/* <TextField fullWidth label="Section" size="small" InputLabelProps={{shrink: true}}
                     name="section"
                     value={values.section}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={errors.section}
                     helperText={errors.section}
-                />
+                /> */}
             </Grid>
             <Grid item xs={12}>
                 <Button size="small" fullWidth variant="outlined" color="primary" onClick={closeModal}>Cancel</Button>

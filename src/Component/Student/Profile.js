@@ -1,5 +1,5 @@
-import { Close, Save } from '@mui/icons-material'
-import { Backdrop, Button, CircularProgress, CssBaseline, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Toolbar, Typography } from '@mui/material'
+import { Close, History, Save } from '@mui/icons-material'
+import { Backdrop, Button, CircularProgress, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
@@ -40,7 +40,7 @@ export const StudentProfileForm = ({profile, user}) => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [sections, setSections] = useState([])
-    
+    const [archiveStudent, setArchiveStudent] = useState(false)
     const initialAddress = {
         houseNo: profile?.address?.houseNo || '',
         barangay: profile?.address?.barangay ||'',
@@ -115,8 +115,13 @@ export const StudentProfileForm = ({profile, user}) => {
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Typography variant="button">Basic Information</Typography>
+                        {values.studentRecord.grade_level === "6" && !user.archived ? (
+                            <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Archive Student</Button>
+                        ): (
+                                <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Restore Student Records</Button>
+                        )}
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField 
@@ -283,7 +288,6 @@ export const StudentProfileForm = ({profile, user}) => {
                     <Grid item xs={12}>
                         <Divider />
                     </Grid> 
-
 
                     <Grid item xs={12}>
                         <Typography variant="button">Address Information</Typography>
@@ -473,10 +477,49 @@ export const StudentProfileForm = ({profile, user}) => {
                         >
                             Save Changes
                         </Button> 
-                    </Grid>                
+                    </Grid> 
+                    {archiveStudent && (
+                        <ArchiveStudentDialog open={archiveStudent} onClose={() => setArchiveStudent(false)} student={values} refresh={getSections}/>
+                    )}               
                 </Grid>
     )
 
+}
+
+const ArchiveStudentDialog = ({open, onClose, student, }) => {
+    const [confirm, setConfirm] = useState('')
+    const handleConfirm = async () =>{
+        const {data} = await axiosInstance.put(`/users/archive/${student._id}`, {archived: !student.archived})
+        console.log(data)
+        window.location.reload(false)
+        onClose()
+    }
+    return (
+        <Dialog maxWidth="md" open={open} onClose={onClose}>
+            <DialogTitle>Archive Student Records</DialogTitle>
+            <DialogContent>
+                <Typography variant="body2">
+                    Are you sure you want to {student.archived ? `restore`: `archive`} this student's records?
+                </Typography>
+                <Typography variant="caption" color="GrayText">
+                    Type in <i>{student.archived ? `restore records`: `archive student`}</i> to confirm this action. 
+                </Typography>
+                <TextField value={confirm} onChange={({target}) => setConfirm(target.value)} sx={{mt: 2}} placeholder={student.archived ? 'restore records' : 'archive student'} size="small" fullWidth/>
+            </DialogContent>
+            <DialogActions>
+                <Button size="small" variant="outlined" color="primary" onClick={onClose}>Cancel</Button>
+                {student.archived ? (
+                    <Button size="small" variant="contained" color="primary" disabled={confirm !== 'restore records'} 
+                    onClick={handleConfirm} 
+                    >Confirm</Button>
+                ):(
+                    <Button size="small" variant="contained" color="primary" disabled={confirm !== 'archive student'} 
+                    onClick={handleConfirm} 
+                    >Confirm</Button>
+                ) }
+            </DialogActions>
+        </Dialog>
+    )
 }
 
 export default Profile
