@@ -56,10 +56,10 @@ function Dashboard() {
                 )}
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 10}}>
                     <Typography variant="h6" component="h2">Announcements</Typography>
-                    <Link to="/announcement" style={{fontSize: 12, textDecoration: 'none', color: '#ff0000'}}>View All</Link>
+                    <Link to="/faculty/announcements" style={{fontSize: 12, textDecoration: 'none', color: '#ff0000'}}>View All</Link>
                 </div>
                 <Grid container spacing={2} sx={{p:2}}>
-                    {announcements?.map((item, index) => (
+                    {announcements?.slice(0,5).map((item, index) => (
                         <AnnouncementCard key={index} item={item} />
                     ))}
                 </Grid>
@@ -82,7 +82,7 @@ function Dashboard() {
 export const ClassCard = ({c})=> {
 
     return (
-        <CardActionArea component={Link} to={`/faculty-classes/${c._id}`}>
+        <CardActionArea component={Link} to={`/faculty-classes/${c._id}`} sx={{marginY: 2}}>
             <Card elevation={5} sx={{borderRadius: 2}}>
                 <CardContent>
                     <Typography variant="h6">
@@ -100,7 +100,7 @@ export const ClassCard = ({c})=> {
     )
 }
 
-const AnnouncementCard = ({item}) => {
+export const AnnouncementCard = ({item}) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isViewerOpen, setIsViewerOpen] = useState(false);
     const [links, setLinks] = useState([])

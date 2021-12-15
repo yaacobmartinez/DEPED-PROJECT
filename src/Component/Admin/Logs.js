@@ -6,6 +6,7 @@ import axiosInstance from '../../library/axios'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomBottomBar from '../layout/CustomBottomBar'
 import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
+import { formatISO } from 'date-fns';
 
 function Logs() {
     const [logs, setLogs] = React.useState([])
@@ -78,6 +79,19 @@ function Logs() {
                                         )
                                     }
                                 },
+                                { 
+                                    field: 'date_created', 
+                                    headerName: 'Date',
+                                    type: 'date',
+                                    valueFormatter: (params) => {
+                                      // first converts to JS Date, then to locale option through date-fns
+                                      return formatISO(new Date(params.value), { representation: 'date' } );
+                                    },
+                                    // valueGetter for filtering
+                                    valueGetter: (params) => {
+                                      return formatISO(new Date(params.value), { representation: 'date' } );
+                                    }
+                                  },
                             ]}
                             rowsPerPageOptions={[5, 10, 20]}
                             pagination

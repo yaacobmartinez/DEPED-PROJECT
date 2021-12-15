@@ -37,6 +37,7 @@ function Profile() {
 }
 
 export const StudentProfileForm = ({profile, user}) => {
+    console.log(profile)
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [sections, setSections] = useState([])
@@ -117,11 +118,12 @@ export const StudentProfileForm = ({profile, user}) => {
                     </Grid>
                     <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Typography variant="button">Basic Information</Typography>
-                        {values.studentRecord.grade_level === "6" && !user.archived ? (
-                            <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Archive Student</Button>
-                        ): (
+                        {profile.student_record.grade_level === "6" ? 
+                            !user.archived ? (
+                                <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Archive Student</Button>
+                            ): (
                                 <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Restore Student Records</Button>
-                        )}
+                            ): null}
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField 

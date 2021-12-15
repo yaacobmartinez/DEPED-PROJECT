@@ -37,7 +37,7 @@ export const LandingPage = ({type}) => {
     )
   }
   
-const HeroTitle = ({title, subtitle}) => {
+export const HeroTitle = ({title, subtitle}) => {
   return (
     <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', width: '100%'}}>
       <img src="./Images/icon.png" alt="logo" height="60" style={{marginRight: 20}} />

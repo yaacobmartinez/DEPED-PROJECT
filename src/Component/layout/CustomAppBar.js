@@ -103,8 +103,8 @@ export const AuthenticatedAppBar = () => {
                     }}
                     >
                     <List>
-                        {notifications?.slice(0,4).map((notification) => (
-                            <ListItem button dense style={{background: notification.read ? '#fff' : '#cbeef3'}}
+                        {notifications?.slice(0,4).map((notification, index) => (
+                            <ListItem key={index} button dense style={{background: notification.read ? '#fff' : '#cbeef3'}}
                                 onClick={() => {
                                         handleRead(notification._id)
                                         if(notification.link){

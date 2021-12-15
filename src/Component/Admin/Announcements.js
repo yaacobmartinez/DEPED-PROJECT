@@ -16,6 +16,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import { capitalize } from 'lodash-es'
 import { Link } from 'react-router-dom'
+import { AnnouncementCard } from './Dashboard'
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -89,9 +90,7 @@ function Announcements() {
                             </Grid>
                         )}
                         {announcements?.map((ann, index) => (
-                            <Grid item xs={12} sm={6} key={index}>
-                                <AnnouncementCard announcement={ann}/>
-                            </Grid>
+                            <AnnouncementCard item={ann} key={index}/>
                         ))}
                     </Grid>
             </Box>
@@ -101,61 +100,61 @@ function Announcements() {
 }
 
 
-export const AnnouncementCard = ({announcement}) => {
-    const [links, setLinks] = useState([])
+// export const AnnouncementCard = ({announcement}) => {
+//     const [links, setLinks] = useState([])
 
-    const getLinks = useCallback( async () => {
-        const mediaLinks = await Promise.all(
-            announcement.media.map(async (a) => {
-                const {data} = await axiosInstance.get(`/announcements/image?path=${a}`)
-                return data.link
-            }
-        ));
-        setLinks(mediaLinks)
-    }, [announcement.media])
+//     const getLinks = useCallback( async () => {
+//         const mediaLinks = await Promise.all(
+//             announcement.media.map(async (a) => {
+//                 const {data} = await axiosInstance.get(`/announcements/image?path=${a}`)
+//                 return data.link
+//             }
+//         ));
+//         setLinks(mediaLinks)
+//     }, [announcement.media])
 
-    useEffect(() => {
-        getLinks()
-    }, [getLinks])
-    const [activeStep, setActiveStep] = React.useState(0);
-    const handleStepChange = (step) => {
-        setActiveStep(step);
-    };
-    return (
-        <CardActionArea>
-            <Card elevation={5} sx={{borderRadius: 2}}>
-                {links.length > 0 && (
-                    <CardMedia>
-                        <AutoPlaySwipeableViews
-                            axis="x"
-                            index={activeStep}
-                            onChangeIndex={handleStepChange}
-                            enableMouseEvents
-                        >
-                            {links.map((l,index) => (
-                                <img src={l} alt={index} style={{width: '100%', height: 'auto'}} />
-                            ))}
-                        </AutoPlaySwipeableViews>
-                    </CardMedia>
-                )}
-                <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        {capitalize(announcement.audience)} Announcement
-                    </Typography>
-                    <Typography variant="h5" component="div">
-                        {announcement.title}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        {formatDistanceToNowStrict(new Date(announcement.date_created), { addSuffix: true })}
-                    </Typography>
-                    <Typography sx={{marginTop: 2}} variant="body2">
-                        {announcement.description}
-                    </Typography>
-                </CardContent>
-            </Card>
-        </CardActionArea>
-    )
-}
+//     useEffect(() => {
+//         getLinks()
+//     }, [getLinks])
+//     const [activeStep, setActiveStep] = React.useState(0);
+//     const handleStepChange = (step) => {
+//         setActiveStep(step);
+//     };
+//     return (
+//         <CardActionArea>
+//             <Card elevation={5} sx={{borderRadius: 2}}>
+//                 {links.length > 0 && (
+//                     <CardMedia>
+//                         <AutoPlaySwipeableViews
+//                             axis="x"
+//                             index={activeStep}
+//                             onChangeIndex={handleStepChange}
+//                             enableMouseEvents
+//                         >
+//                             {links.map((l,index) => (
+//                                 <img src={l} alt={index} style={{width: '100%', height: 'auto'}} />
+//                             ))}
+//                         </AutoPlaySwipeableViews>
+//                     </CardMedia>
+//                 )}
+//                 <CardContent>
+//                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+//                         {capitalize(announcement.audience)} Announcement
+//                     </Typography>
+//                     <Typography variant="h5" component="div">
+//                         {announcement.title}
+//                     </Typography>
+//                     <Typography variant="caption" color="text.secondary">
+//                         {formatDistanceToNowStrict(new Date(announcement.date_created), { addSuffix: true })}
+//                     </Typography>
+//                     <Typography sx={{marginTop: 2}} variant="body2">
+//                         {announcement.description}
+//                     </Typography>
+//                 </CardContent>
+//             </Card>
+//         </CardActionArea>
+//     )
+// }
 
 const AnnouncementDialog = ({open, onClose, onChange}) => {
     const user = fetchFromStorage('user')

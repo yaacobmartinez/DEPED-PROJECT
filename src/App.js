@@ -31,8 +31,11 @@ import TeacherSchoolForms from './Component/Teacher/Forms';
 import Forms from './Component/Student/Forms';
 import MyClass from './Component/Student/MyClass';
 import Notifications from './Component/Teacher/Notifications';
+import FacultyAnnouncements from './Component/Teacher/Announcements';
+
 import Logs from './Component/Admin/Logs';
 import Requests from './Component/Admin/Requests';
+import ForgotPassword from './Component/ForgotPassword';
 
 const theme = createTheme({
   typography: {
@@ -61,13 +64,16 @@ function App() {
 
               <AppRoute exact path="/" component={() => <LandingPage type="login" />} />
               <AppRoute exact path="/register" component={() => <LandingPage type="register" />} />
-              
+              <AppRoute exact path="/forgot-password" component={ForgotPassword} />
+              <AppRoute exact path="/changepassword" component={ChangePassword} />
+
               <TeacherRoute exact path="/teacher" component={Teacher} />
               <TeacherRoute exact path="/faculty" component={TeacherDashboard} />
               <TeacherRoute exact path="/faculty-classes/:id" component={FacultyClasses} />
               <TeacherRoute exact path="/faculty/classes" component={MyClasses} />
               <TeacherRoute exact path="/faculty/forms" component={TeacherSchoolForms} />
               <TeacherRoute exact path="/faculty/notifications" component={Notifications} />
+              <TeacherRoute exact path="/faculty/announcements" component={FacultyAnnouncements} />
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
