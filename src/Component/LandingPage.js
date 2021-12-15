@@ -248,7 +248,7 @@ const RegisterComponent = () => {
             value={values.firstName}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.firstName}
+            error={Boolean(errors.firstName)}
             helperText={errors.firstName}
           />
         <TextField
@@ -260,7 +260,7 @@ const RegisterComponent = () => {
           value={values.lastName}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.lastName}
+          error={Boolean(errors.lastName)}
           helperText={errors.lastName}
         />
         <TextField
@@ -273,7 +273,7 @@ const RegisterComponent = () => {
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.email}
+          error={Boolean(errors.email)}
           helperText={errors.email}
         />
         <TextField
@@ -287,7 +287,7 @@ const RegisterComponent = () => {
           value={values.password}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.password}
+          error={Boolean(errors.password)}
           helperText={errors.password}
           />
         <TextField
@@ -301,7 +301,7 @@ const RegisterComponent = () => {
           value={values.confirmPassword}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.confirmPassword}
+          error={Boolean(errors.confirmPassword)}
           helperText={errors.confirmPassword}
           />
           {schools && (
@@ -316,12 +316,14 @@ const RegisterComponent = () => {
                     onBlur={handleBlur}
                     name="school"
                 >
-                    {schools?.map((school) => (
-                        <MenuItem value={school._id} PaperProps={{
-                          style: {
-                            maxHeight: 500,
-                          },
-                        }}>{school.name}</MenuItem>
+                    {schools?.map((school, index) => (
+                        <MenuItem value={school._id} key={index} 
+                        // PaperProps={{
+                        //   style: {
+                        //     maxHeight: 500,
+                        //   },
+                        // }}
+                        >{school.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>
@@ -335,7 +337,7 @@ const RegisterComponent = () => {
             value={values.lrn}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.lrn}
+            error={Boolean(errors.lrn)}
             helperText={errors.lrn}
           />
           <FormControlLabel
