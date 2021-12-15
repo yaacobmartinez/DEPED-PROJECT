@@ -1,4 +1,4 @@
-import { AccountBalance, AccountCircle, Book, Campaign, Description, DescriptionOutlined, Event, History, Home, ListAlt, PermIdentity, Person, Settings, SupervisedUserCircle} from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Book, Campaign, Description, DescriptionOutlined, Event, History, Home, ListAlt, PermIdentity, Person, Poll, Settings, SupervisedUserCircle} from '@mui/icons-material';
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
@@ -142,12 +142,30 @@ function CustomDrawer() {
                 {user.access_level === 2048 && adminMenu.map((item, index) => (
                     <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
                 ))}
+                {/* Change Link to google forms link  */}
+                {user.access_level === 3 && (
+                    <ListItem button component="a" href="https://forms.gle/9S8uyBKxgG1WLebf6" target="_blank">
+                        <ListItemIcon>
+                            <Poll />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle2">Survey Form</Typography>} />
+                    </ListItem>
+                )}
                 {user.access_level !== 3 && (
                     <ListItem button component="a" href="https://calendar.google.com/" target="_blank">
                         <ListItemIcon>
                             <Event />
                         </ListItemIcon>
                         <ListItemText primary={<Typography variant="subtitle2">Calendar</Typography>} />
+                    </ListItem>
+                )}
+                {/* Change Link to Form Spreadsheet */}
+                {user.access_level === 2048 && (
+                    <ListItem button component="a" href="https://docs.google.com/spreadsheets/d/1d9EOO4sk-B-D-Iz6G72w7M3ohyX5GXNrkcnzJAF1IAM/edit" target="_blank">
+                        <ListItemIcon>
+                            <Poll />
+                        </ListItemIcon>
+                        <ListItemText primary={<Typography variant="subtitle2">Survey Form Results</Typography>} />
                     </ListItem>
                 )}
                 <div style={{position: 'fixed', bottom: 0, width: drawerWidth}}>
