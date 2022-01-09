@@ -57,10 +57,7 @@ function ClassPerSection() {
                     <Typography variant="h6" gutterBottom>Manage Grade {grade} Section {section} Classes</Typography>
                     <Button variant="contained" size="small" color="primary" startIcon={<Add />} onClick={() => setNewClass(true)}>Add a Class</Button>
                 </div>
-                <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: 10}}>
-                    <Button size="small" onClick={() => setViewType('Cards')}><GridView/></Button>
-                    <Button size="small" onClick={() => setViewType('List')}><ViewList/></Button>
-                </div>
+                
                 <Grid container spacing={2}>
                     {classes.length < 1 && (
                         <Grid item xs={12}>
@@ -98,7 +95,7 @@ const ClassList = ({c, teachers}) => {
                     primary={c.className} 
                     secondary={
                         <Typography variant="caption" color="GrayText">
-                            {teacher.firstName} {teacher.lastName} / {c.start_time} - {c.end_time}
+                            {teacher?.firstName} {teacher?.lastName} / {c.start_time} - {c.end_time}
                         </Typography>
                     } 
                   />
