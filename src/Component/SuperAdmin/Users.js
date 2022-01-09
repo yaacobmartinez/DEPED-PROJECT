@@ -201,6 +201,8 @@ export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) 
             setLoading(true)
             const {data} = await axios.post('/users',values)
             console.log(data)
+            const res = await axios.post(`/users/forgotpass`, {email: values.email})
+            console.log(res)
             setLoading(false)
             setMessage(data.success 
                 ? 'User Account Created.' 
