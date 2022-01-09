@@ -18,7 +18,7 @@ function ClassListOfStudents() {
         const {data} = await axiosInstance.get(`/classes/${id}`)
         console.log(data.class)
         setClassDetails(data.class)
-        const t = await axiosInstance.get(`/users/${data.class.teacher}`)
+        const t = await axiosInstance.get(`/users/${data.class.teacher._id}`)
         console.log(t.data)
         setTeacher(t.data.user)
         const students = await axiosInstance.get(`/studentrecords?grade_level=${data.class.grade_level}&section=${data.class.section}&school_year=${data.class.school_year}`)

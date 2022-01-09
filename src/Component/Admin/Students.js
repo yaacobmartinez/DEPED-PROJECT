@@ -209,6 +209,8 @@ const GrantAccessDialog = ({user, open, onClose, parentClose, refreshList}) => {
 
 export const UpdateStudentForm = ({student, closeModal}) => {
 
+    const yearNow = new Date().getFullYear()
+    const currentSY = `${yearNow} - ${yearNow + 1}`
     const {errors, handleChange, values, handleBlur, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
             ...student, 
@@ -218,6 +220,7 @@ export const UpdateStudentForm = ({student, closeModal}) => {
             IP: '',
             grade_level: '', 
             section: '',
+            school_year: currentSY
         },
         validationSchema: Yup.object({
             firstName: Yup.string()
