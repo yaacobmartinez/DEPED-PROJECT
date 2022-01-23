@@ -20,6 +20,7 @@ import User from './Component/SuperAdmin/User';
 import Schools from './Component/SuperAdmin/Schools';
 import School from './Component/SuperAdmin/School';
 import ChangePassword from './Component/ChangePassword';
+import ChangePass from './Component/ChangePass'
 import ClassPerSection from './Component/Admin/ClassPerSection';
 import ClassListOfStudents from './Component/Admin/ClassListOfStudents';
 import Announcements from './Component/Admin/Announcements';
@@ -32,6 +33,7 @@ import Forms from './Component/Student/Forms';
 import MyClass from './Component/Student/MyClass';
 import Notifications from './Component/Teacher/Notifications';
 import FacultyAnnouncements from './Component/Teacher/Announcements';
+import FacultyProfile from './Component/Teacher/Profile';
 
 import Logs from './Component/Admin/Logs';
 import Requests from './Component/Admin/Requests';
@@ -74,6 +76,7 @@ function App() {
               <TeacherRoute exact path="/faculty/forms" component={TeacherSchoolForms} />
               <TeacherRoute exact path="/faculty/notifications" component={Notifications} />
               <TeacherRoute exact path="/faculty/announcements" component={FacultyAnnouncements} />
+              <TeacherRoute exact path="/faculty/profile" component={FacultyProfile} />
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
@@ -81,6 +84,8 @@ function App() {
               <StudentRoute exact path="/student/forms" component={Forms} />
               <StudentRoute exact path="/student/notifications" component={Notifications} />
               <StudentRoute exact path="/myclass/:id" component={MyClass} />
+              <StudentRoute exact path="/change-password" component={ChangePass} />
+
               
               <AdminRoute exact path="/admin" component={AdminDashboard} />
               <AdminRoute exact path="/admin/school" component={AdminSchool} />

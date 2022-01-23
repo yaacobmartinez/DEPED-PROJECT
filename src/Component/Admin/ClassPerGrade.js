@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { Link } from 'react-router-dom'
 import axiosInstance from '../../library/axios'
+import { fetchFromStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomBottomBar from '../layout/CustomBottomBar'
 import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
@@ -15,12 +16,14 @@ export const useQuery = () => {
   
 function ClassPerGrade() {
     let query = useQuery();
+    const user = fetchFromStorage('user')
+    console.log(user, 'user info')
     const grade = query.get('level')
     const [sections, setSections] = useState([])
     const [newSection, setNewSection] = useState(false)
     const getSection = React.useCallback(
         async () => {
-            const {data} = await axiosInstance.get(`/sections/${grade}`)
+            const {data} = await axiosInstance.get(`/sections/${grade}/${user.school}`)
             console.log(data)
             setSections(data.sections)
         },
@@ -80,15 +83,15 @@ const SectionCard = ({section}) => {
     )
 }
 const NewSectionDialog = ({grade, open, onClose, onChange}) => {
-
+    const user = fetchFromStorage('user')
     const [sectionName, setSectionName] = useState('')
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (sectionName === '') return
         const body = {
             grade_level: grade, 
-            section: sectionName
+            section: sectionName,
+            school: user.school
         }
         const {data} = await axiosInstance.post(`/sections`, body)
         console.log(data)

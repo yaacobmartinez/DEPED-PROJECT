@@ -29,6 +29,8 @@ function Forms() {
         getRequests()
     }, [getRequests])
 
+    const [selectedRequest, setSelectedRequest] = useState(null)
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -46,6 +48,9 @@ function Forms() {
                 >
                     Request a Document
                 </Button>
+                {selectedRequest && (
+                    <RequestDialog open={Boolean(selectedRequest)} onClose={() => setSelectedRequest(null)} request={selectedRequest} />
+                )}
                     {requests && (
                         <DataGrid rows={requests} 
                             autoHeight 
@@ -54,6 +59,7 @@ function Forms() {
                             components={{
                                 Toolbar: GridToolbar,
                             }}
+                            onRowClick={(row) => setSelectedRequest(row.row)}
                             columns={[
                                 { 
                                     field: 'document', 
@@ -98,9 +104,41 @@ function Forms() {
     )
 }
 
+const RequestDialog = ({open, onClose, request}) => {
+
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Document Request</DialogTitle>
+            <DialogContent>
+                <Grid container spacing={2} >
+                    <Grid item xs={12}>
+                        <Typography variant="body2">Requested Document</Typography>
+                        <Typography variant="caption" color="GrayText">{request.document}</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="body2">Status</Typography>
+                        <Typography variant="caption" color="GrayText">{request.status}</Typography>
+                    </Grid>
+                    {
+                        request.declineReason && 
+                        <Grid item xs={12}>
+                            <Typography variant="body2">Decline Reason</Typography>
+                            <Typography variant="caption" color="GrayText">{request.declineReason}</Typography>
+                        </Grid>
+                    }
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" color="secondary" size="small" onClick={onClose}>Cancel</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
+
 const NewRequestDialog = ({open, onClose, onChange}) =>{
     const [documentType, setDocumentType] = useState('')
     const [result, setResult] = useState(null)
+    const [error, setError] = useState(null)
     const handleSubmit = async (e) =>{
         e.preventDefault()
         if (!documentType) return 
@@ -108,11 +146,11 @@ const NewRequestDialog = ({open, onClose, onChange}) =>{
         console.log(data)
         if (data.success){
             setResult('Request Submitted')
+            onChange()
+            return onClose()
         }else{
-            setResult('An error occurred try again.')
+            return setError(data.message)
         }
-        onClose()
-        onChange()
     } 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth component="form" onSubmit={handleSubmit}>
@@ -125,20 +163,22 @@ const NewRequestDialog = ({open, onClose, onChange}) =>{
             <DialogTitle>New Document Request</DialogTitle>
             <DialogContent>
             <Grid container spacing={2} >
-                    <Grid item xs={12}>
-                        <TextField 
-                            style={{marginTop: 10}}
-                            required
-                            fullWidth 
-                            label="Document Type" 
-                            size="small"
-                            value={documentType}
-                            onChange={({target}) => setDocumentType(target.value)} 
-                            InputLabelProps={{shrink: true}}
-                            name="type"
-                            placeholder="e.g. Form 137, School Card"
-                        />
-                    </Grid>
+                <Grid item xs={12}>
+                    <TextField 
+                        style={{marginTop: 10}}
+                        required
+                        fullWidth 
+                        label="Document Type" 
+                        size="small"
+                        value={documentType}
+                        onChange={({target}) => setDocumentType(target.value)} 
+                        InputLabelProps={{shrink: true}}
+                        name="type"
+                        placeholder="e.g. Form 137, School Card"
+                        error={Boolean(error)}
+                        helperText={error}
+                    />
+                </Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>

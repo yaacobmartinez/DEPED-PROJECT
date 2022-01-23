@@ -179,8 +179,6 @@ const AnnouncementDialog = ({open, onClose, onChange}) => {
         validationSchema: Yup.object({
             title: Yup.string()
                 .required('What is the announcement about?'),
-            description: Yup.string()
-                .required('Tell us something about the announcement')
         }), 
         onSubmit: async (values, {resetForm, setSubmitting}) => {
             setSubmitting(true)
@@ -245,23 +243,6 @@ const AnnouncementDialog = ({open, onClose, onChange}) => {
                                 {thumbs}
                             </aside>
                         </div>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField 
-                            required
-                            multiline
-                            rows={5}
-                            fullWidth 
-                            label="Description" 
-                            size="small" 
-                            InputLabelProps={{shrink: true}}
-                            name="description"
-                            value={values.description}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={Boolean(errors.description)}
-                            helperText={errors.description}
-                        />
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>

@@ -27,7 +27,7 @@ function Classes() {
             <CustomDrawer />
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                <Typography variant="h6">My Classes</Typography>
+                <Typography variant="h6">My Modules</Typography>
                 <Grid container spacing={2} sx={{mt: 2}}>
                     {classes?.map((c, index) => (
                         <Grid key={index} item xs={12} sm={6}>

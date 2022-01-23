@@ -44,7 +44,6 @@ export const AuthenticatedAppBar = () => {
 
     const getNotifications = React.useCallback(async() => {
         const {data} = await axiosInstance.get(`/notifications?user=${user._id}`)
-        console.log(data)
         setNotifications(data.notifications)
     }, [user._id])
     useEffect(() => {
@@ -53,7 +52,6 @@ export const AuthenticatedAppBar = () => {
 
     const handleRead = async (id) => {
         const {data} = await axiosInstance.put(`/notifications/${id}`)
-        console.log(data)
         getNotifications()
     }
 
@@ -132,7 +130,6 @@ export const AuthenticatedAppBar = () => {
                                 } 
                             />     
                         </ListItem>
-
                     </List>
                 </Popover>
                 <IconButton color="inherit" onClick={handleClick}>
@@ -144,12 +141,22 @@ export const AuthenticatedAppBar = () => {
                     onClose={handleClose}
                 >
                     <MenuList dense sx={{width: 200}}>
-                        <MenuItem onClick={() => push('/student/profile')}>
-                            <ListItemIcon>
-                                <AccountCircle fontSize="small" />
-                            </ListItemIcon>
-                            Profile
-                        </MenuItem>
+                        {user?.access_level === 3 && (
+                            <MenuItem onClick={() => push('/student/profile')}>
+                                <ListItemIcon>
+                                    <AccountCircle fontSize="small" />
+                                </ListItemIcon>
+                                Profile
+                            </MenuItem>
+                        )}
+                        {user?.access_level === 2 && (
+                            <MenuItem onClick={() => push('/faculty/profile')}>
+                                <ListItemIcon>
+                                    <AccountCircle fontSize="small" />
+                                </ListItemIcon>
+                                Profile
+                            </MenuItem>
+                        )}
                         <Divider />
                         <MenuItem onClick={logOut}>
                             <ListItemIcon>

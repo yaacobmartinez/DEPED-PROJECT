@@ -1,7 +1,7 @@
-import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Toolbar, Typography } from '@mui/material';
+import { Button, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import React from 'react'
+import React, { useState } from 'react'
 import axiosInstance from '../../library/axios';
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
 import CustomBottomBar from '../layout/CustomBottomBar';
@@ -74,6 +74,16 @@ function Requests() {
                                         )
                                     }
                                 },
+                                { 
+                                    field: 'declineReason', 
+                                    headerName: 'Reason for Declining',
+                                    minWidth: 200,
+                                    renderCell: cell => {
+                                        return (
+                                            <Typography variant="body2" color="black" >{cell.value}</Typography>
+                                        )
+                                    }
+                                },
                             ]}
                             rowsPerPageOptions={[5, 10, 20]}
                             pagination
@@ -90,19 +100,46 @@ function Requests() {
 }
 
 const TagAsComplete = ({open, onClose, onChange, id}) => {
+    const [status, setStatus] = useState('Pending')
+    const [declineReason, setDeclineReason] = useState('')
+    const [error, setError] = useState(null)
     const handleComplete = async () => {
-        const {data} = await axiosInstance.put(`/requests/${id}`)
+        console.log(status)
+        if(status === 'Decline' && declineReason === '') return setError('Decline Reason is required')
+        const reason = status === 'Decline' ? declineReason : ''
+        const {data} = await axiosInstance.put(`/requests/updatestatus/${id}`, {status, declineReason: reason})
         console.log(data)
         onChange()
-        onClose()
+        onClose() 
+    }
+    const handleChange = (e) => {
+        setDeclineReason(e.target.value)
+        setError(null)
     }
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Tag as Completed?</DialogTitle>
+            <DialogTitle>Update Document Request Status</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    Are you sure you want to tag this request as completed?
-                </DialogContentText>
+                <FormControl fullWidth>
+                    <InputLabel shrink={true}>Status</InputLabel>
+                    <Select
+                        size="small"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        name="status"
+                        label="Status"
+                    >
+                        {['Pending', 'Decline', 'For Pickup', 'Fulfilled'].map((el, index) => (
+                            <MenuItem key={index} value={el}>{el}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                {status === 'Decline' && (
+                    <TextField 
+                        error={Boolean(error)}
+                        helperText={error}
+                        size="small" sx={{mt: 2}} fullWidth label="Decline Reason" value={declineReason} onChange={handleChange} />
+                )}
             </DialogContent>
             <DialogActions>
                 <Button variant="outlined" color="primary" onClick={onClose} size="small">Cancel</Button>

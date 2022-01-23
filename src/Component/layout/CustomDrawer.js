@@ -49,7 +49,7 @@ export const studentMenu = [
         link: '/student'
     },
     {
-        name: 'My Classes', 
+        name: 'My Modules', 
         icon: <Book />,
         link: '/student/classes'
     },

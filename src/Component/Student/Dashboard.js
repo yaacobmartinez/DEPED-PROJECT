@@ -54,7 +54,7 @@ function Dashboard() {
 
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                            <Typography variant="h6">My Classes</Typography>
+                            <Typography variant="h6">My Modules</Typography>
                             <Link to="/student/classes" style={{fontSize: 12}}> View All</Link>
                         </div>
                         <Box sx={{p: 2, width: '100%'}}>

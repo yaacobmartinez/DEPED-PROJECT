@@ -23,6 +23,7 @@ function Schools() {
             console.log(res.data)
             setSchools(res.data.schools)
         },
+        
     [])
     React.useEffect(() => {
         getSchools()

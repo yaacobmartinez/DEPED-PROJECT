@@ -1,13 +1,17 @@
-import { Close, History, Save } from '@mui/icons-material'
-import { Backdrop, Button, CircularProgress, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Toolbar, Typography } from '@mui/material'
+import { AccountCircle, AccountCircleOutlined, Close, History, Lock, Save } from '@mui/icons-material'
+import { Avatar, Backdrop, Button, CircularProgress, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Toolbar, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import React, { useEffect, useState } from 'react'
-import { fetchFromStorage } from '../../library/utilities/Storage'
+import React, { useEffect, useRef, useState } from 'react'
+import { fetchFromStorage, saveToStorage } from '../../library/utilities/Storage'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer, { studentMenu } from '../layout/CustomDrawer'
 import axiosInstance from '../../library/axios'
 import CustomBottomBar from '../layout/CustomBottomBar'
+import loadingAnimation from './loading.json'
+import Lottie from "lottie-react";
+import { useHistory } from 'react-router-dom'
+
 function Profile() {
     const user = fetchFromStorage('user')
 
@@ -37,10 +41,12 @@ function Profile() {
 }
 
 export const StudentProfileForm = ({profile, user}) => {
-    console.log(profile)
+    console.log(user)
+    const {push} = useHistory()
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [sections, setSections] = useState([])
+    const [profileImage, setProfileImage] = useState(null)
     const [archiveStudent, setArchiveStudent] = useState(false)
     const initialAddress = {
         houseNo: profile?.address?.houseNo || '',
@@ -88,9 +94,33 @@ export const StudentProfileForm = ({profile, user}) => {
         const {data} = await axiosInstance.get(`/sections`) 
         setSections(data.sections.filter((a) => a.grade_level === values.studentRecord.grade_level.toString()))
     }, [values.studentRecord.grade_level])
+
+    const getProfileImage = React.useCallback(async() => {
+        if (user.avatar){
+            const {data} = await axiosInstance.get(`/announcements/image?path=${user.avatar}`)
+            setProfileImage(data.link)
+        }
+    }, [user])
     useEffect(() => {
         getSections()
-    }, [getSections])
+        getProfileImage()
+    }, [getSections, getProfileImage])
+    const imageRef = useRef()
+    const handleFileChange = async (e) =>{
+        const form  = new FormData() 
+        form.append('media', e.target.files[0])
+        setLoading(true)
+        const {data} = await axiosInstance.post(`/users/uploadavatar/${user._id}`, form)
+        console.log(data)
+        setProfileImage(data.link)
+        const path = data.file.key
+        const updatedUser = {...user, avatar: path}
+        saveToStorage('user', updatedUser)
+        setLoading(false)
+    }
+    const handleImageClick = () => {
+        imageRef.current.click()
+    }
     return (
         <Grid container spacing={2} sx={{p: 2}} component="form" onSubmit={handleSubmit}> 
             <Backdrop open={loading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -124,6 +154,38 @@ export const StudentProfileForm = ({profile, user}) => {
                             ): (
                                 <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Restore Student Records</Button>
                             ): null}
+                            <Button size="small" color="primary" variant='contained' onClick={() => push('/change-password')} startIcon={<Lock />}>Change Password</Button>
+                    </Grid>
+                    <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginY: 2}}>
+                        <input 
+                            accept="image/png, image/gif, image/jpeg"
+                            type="file"
+                            hidden={true}
+                            name="profileImage"
+                            id="profileImage"
+                            ref={imageRef}
+                            onChange={handleFileChange}
+                        />
+                        {profileImage ? (
+                            <Tooltip title={
+                                <div style={{padding: 5}}>
+                                    <Typography variant="caption">Change Image</Typography>
+                                </div>
+                            } arrow>
+                                <Avatar alt="Profile Image" onClick={handleImageClick} src={profileImage} sx={{ width: 150, height: 150 }}/>
+                            </Tooltip>
+                            
+                        ): (
+                            <Tooltip title={
+                                <div style={{padding: 5}}>
+                                    <Typography variant="caption">Upload Image</Typography>
+                                </div>
+                            } arrow>
+                                <Avatar sx={{ width: 150, height: 150 }}>
+                                    <Lottie animationData={loadingAnimation} onClick={handleImageClick} />
+                                </Avatar>
+                            </Tooltip>
+                        )}  
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField 

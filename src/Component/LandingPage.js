@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, InputLabel, MenuItem, Paper, Select, Snackbar, TextField } from '@mui/material';
+import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Snackbar, TextField } from '@mui/material';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CustomCarousel from './layout/CustomCarousel';
@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from '../library/axios'
 import { saveToStorage } from '../library/utilities/Storage';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export const LandingPage = ({type}) => {
     return(
@@ -56,6 +57,7 @@ const LoginComponent = () => {
   const {push} = useHistory()
   const [message, setMessage] = React.useState(null)
   const [success, setSuccess] = React.useState("error")
+  const [showPassword, setShowPassword] = React.useState(false)
 
   const {errors, handleChange, values, handleBlur, handleSubmit } = useFormik({
     initialValues: {
@@ -116,19 +118,31 @@ const LoginComponent = () => {
               error={Boolean(errors.email)}
               helperText={errors.email}
               />
-            <TextField
+            <InputLabel>Password</InputLabel>
+            <OutlinedInput
               size="small"
               margin="normal"
               required fullWidth
               label="Password"
               name="password"
-              type="password"
+              type={showPassword ? "text": "password"} 
               autoComplete="password"
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
               error={Boolean(errors.password)}
               helperText={errors.password}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
               />
               <Button type="submit" fullWidth variant="contained" sx= {{mt: 3, mb: 2}}>
                 Sign In
@@ -186,6 +200,7 @@ const RegisterComponent = () => {
 
   const [message, setMessage] = React.useState(null)
   const [success, setSuccess] = React.useState("error")
+  const [showPassword, setShowPassword] = React.useState(false)
   const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
     initialValues: {
       firstName: '',
@@ -218,6 +233,7 @@ const RegisterComponent = () => {
           .required('We need to know which school are you enrolling.'),
       lrn: Yup.string()
           .matches(/^[0-9]+$/, "Must be only digits")
+          .min(12, "LRN must be 12 digits")
           .max(12, "LRN must be 12 digits")
           .required('Please provide a valid LRN'),
       }), 
@@ -276,19 +292,31 @@ const RegisterComponent = () => {
           error={Boolean(errors.email)}
           helperText={errors.email}
         />
-        <TextField
+        <InputLabel>Password</InputLabel>
+        <OutlinedInput
           size="small"
           margin="normal"
           required fullWidth
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? "text": "password"} 
           autoComplete="password"
           value={values.password}
           onChange={handleChange}
           onBlur={handleBlur}
           error={Boolean(errors.password)}
           helperText={errors.password}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
           />
         <TextField
           size="small"
