@@ -1,4 +1,4 @@
-import { Close, History, Save } from '@mui/icons-material'
+import { Close, History, Lock, Save } from '@mui/icons-material'
 import { Backdrop, Button, CircularProgress, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
@@ -9,6 +9,7 @@ import CustomDrawer, { facultyMenu } from '../layout/CustomDrawer'
 import axiosInstance from '../../library/axios'
 import CustomBottomBar from '../layout/CustomBottomBar'
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom'
 
 function Profile() {
     const user = fetchFromStorage('user')
@@ -29,6 +30,7 @@ function Profile() {
 }
 
 const ProfileForm = ({user}) => {
+    const {push} = useHistory()
     const {values, errors, handleBlur, handleChange, handleSubmit, isSubmitting} = useFormik({
         initialValues: user, 
         validationSchema: Yup.object({
@@ -55,7 +57,11 @@ const ProfileForm = ({user}) => {
             <Grid item xs={12}>
                 <Divider />
             </Grid>
-
+            <Grid item xs={12} container justifyContent={'flex-end'} alignItems={'flex-end'}>
+                <Grid item xs={12}>
+                    <Button size="small" color="primary" variant='contained' onClick={() => push('/faculty/change-password')} startIcon={<Lock />}>Change Password</Button>
+                </Grid>
+            </Grid>
             <Grid item xs={12} sm={4}>
                 <TextField 
                     fullWidth

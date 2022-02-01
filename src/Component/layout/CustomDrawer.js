@@ -2,9 +2,10 @@ import { AccountBalance, AccountCircle, Book, Campaign, Description, Description
 import { Avatar, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import SchoolIcon from '@mui/icons-material/School';
-import React from 'react'
-import { useHistory } from 'react-router';
+import React, { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../../library/axios';
 const drawerWidth = 300;
 
 export const superadminMenu = [
@@ -115,6 +116,17 @@ export const adminMenu = [
 function CustomDrawer() {
     const user = JSON.parse(sessionStorage.getItem('user'))
     const {push} = useHistory()
+    const {pathname} = useLocation()
+    const [profileImage, setProfileImage] = useState(null)
+    const getProfileImage = React.useCallback(async() => {
+        if (user.avatar){
+            const {data} = await axiosInstance.get(`/announcements/image?path=${user.avatar}`)
+            setProfileImage(data.link)
+        }
+    }, [user])
+    useEffect(() => {
+        getProfileImage()
+    }, [getProfileImage])
     return (
         <Drawer
             variant="permanent"
@@ -131,16 +143,16 @@ function CustomDrawer() {
             <Divider />
             <List>
                 {user.access_level === 4096 && superadminMenu.map((item, index) => (
-                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index} currentRoute={pathname}/>
                 ))}
                 {user.access_level === 3 && studentMenu.map((item, index) => (
-                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index} currentRoute={pathname}/>
                 ))}
                 {user.access_level === 2 && facultyMenu.map((item, index) => (
-                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index} currentRoute={pathname}/>
                 ))}
                 {user.access_level === 2048 && adminMenu.map((item, index) => (
-                    <ListMenuItem item={item} callback={() => push(item.link)} key={index}/>
+                    <ListMenuItem item={item} callback={() => push(item.link)} key={index} currentRoute={pathname}/>
                 ))}
                 {/* Change Link to google forms link  */}
                 {user.access_level === 3 && (
@@ -172,7 +184,7 @@ function CustomDrawer() {
                     <Divider />
                     <ListItem>
                         <ListItemAvatar>
-                            <Avatar src="/test.jpg"/>
+                            <Avatar src={profileImage}/>
                         </ListItemAvatar>
                         <ListItemText primary={<Typography variant="subtitle2">{user.firstName} {user.lastName}</Typography>} 
                         secondary={<Typography variant="caption" color="textSecondary">{user.email}</Typography>} />
@@ -184,9 +196,9 @@ function CustomDrawer() {
     )
 }
 
-const ListMenuItem = ({item, callback}) => {
+const ListMenuItem = ({item, callback, currentRoute}) => {
     return (
-        <ListItem button onClick={callback}>
+        <ListItem button onClick={callback} selected={currentRoute === item.link}>
             <ListItemIcon>
             {item.icon}
             </ListItemIcon>

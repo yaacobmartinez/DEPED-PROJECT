@@ -1,8 +1,8 @@
 import { Add, Close, CloudDownload, Delete, FilePresent } from '@mui/icons-material'
-import { Avatar, Button, Card, CardActionArea, CardContent, CssBaseline, Grid, IconButton, ListItem, ListItemAvatar, ListItemText, SwipeableDrawer, TextField, Toolbar, Typography } from '@mui/material'
+import { Avatar, Button, Card, CardActionArea, CardContent, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, ListItem, ListItemAvatar, ListItemText, SwipeableDrawer, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useHistory, useParams } from 'react-router'
 import axiosInstance from '../../library/axios'
@@ -19,13 +19,14 @@ function Classes() {
     const [newModule, setNewModule] = useState(false)
     const [modules, setModules] = useState([])
     const [studentPageSize, studentSetPageSize] = React.useState(10);
+    const [selectedModule, setSelectedModule] = useState(null)
     const getCurrentClass = useCallback(async () => {
         const {data} = await axiosInstance.get(`/classes/${id}`)
         setCurrentClass(data.class)
         const students = await axiosInstance.get(`/studentrecords?grade_level=${data.class.grade_level}&section=${data.class.section}&school_year=${data.class.school_year}`)
         setStudents(students.data.students)
         const {data: raw_modules} = await axiosInstance.get(`/modules?class=${id}`)
-        setModules(raw_modules.modules)
+        setModules(raw_modules.modules.sort((a, b) => a.week - b.week))
     }, [id])
     useEffect(() => {
         getCurrentClass()
@@ -35,6 +36,9 @@ function Classes() {
         const {data} = await axiosInstance.get(`/modules/download?path=${path}`)
         console.log(data.link)
         window.open(data.link, '_blank')
+    }
+    const handleRemove = (cell) => {
+        setSelectedModule(cell.id)
     }
     return (
         <Box sx={{ display: 'flex' }}>
@@ -133,6 +137,17 @@ function Classes() {
                                             }
                                         },
                                         { 
+                                            field: 'week', 
+                                            headerName: 'Week #',
+                                            flex: 1,
+                                            minWidth: 250,
+                                            renderCell: cell => {
+                                                return (
+                                                    <Typography variant="body2" color="black" >{cell.value}</Typography>
+                                                )
+                                            }
+                                        },
+                                        { 
                                             field: 'originalname', 
                                             headerName: 'File Name',
                                             flex: 1,
@@ -160,7 +175,10 @@ function Classes() {
                                             minWidth: 250,
                                             renderCell: cell => {
                                                 return (
-                                                    <Button size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                                    <Fragment>
+                                                        <Button size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                                        <Button size="small" variant="contained" sx={{ml: 1}} color="error" onClick={() => handleRemove(cell)}>Remove</Button>
+                                                    </Fragment>
                                                 )
                                             }
                                         },
@@ -172,7 +190,9 @@ function Classes() {
                                 />
                             )}
                         </Grid>
-
+                        {selectedModule && (
+                            <RemoveConfirmation open={Boolean(selectedModule)} onClose={() => setSelectedModule(null)} id={selectedModule} onChange={getCurrentClass} />
+                        )}
                     </Grid>
                 </Grid>
             </Box>
@@ -181,6 +201,28 @@ function Classes() {
     )
 }
 
+const RemoveConfirmation = ({open, onClose, id, onChange}) => {
+    const handleRemove = async () => {
+        const {data} = await axiosInstance.delete(`/modules/${id}`)
+        console.log(data)
+        onChange()
+        onClose()
+    }
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Remove Module?</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <DialogContentText>Are you sure you want to remove this module?</DialogContentText>
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button size="small" variant="outlined" onClick={onClose}>Cancel</Button>
+                <Button size="small" variant="contained" color="error" onClick={handleRemove}>Remove Module</Button>
+            </DialogActions>
+        </Dialog>
+    )
+}
 const ModuleCard = ({module}) => {
     return (
         <Grid item xs={12}>
@@ -215,6 +257,7 @@ const NewModuleDrawer = ({open, onClose, onChange, currentclass}) => {
     const [file, setFile] = useState(null)
     const [fileError, setFileError] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [week, setWeek] = useState(0)
     const {getRootProps, getInputProps} = useDropzone({
         maxFiles,
         accept: 'image/*,.pdf,.doc,.docx,.pptx,.ppt',
@@ -233,10 +276,12 @@ const NewModuleDrawer = ({open, onClose, onChange, currentclass}) => {
         setIsSubmitting(true)
         if (!title) return 
         if (!file) return 
+        if (week < 1) return
         const form = new FormData()
         form.append('module', file)
         form.append('class', currentclass._id)
         form.append('title', title)
+        form.append('week', week)
         const {data} = await axiosInstance.post(`/modules`, form)
         console.log(data)
         onChange()
@@ -258,6 +303,19 @@ const NewModuleDrawer = ({open, onClose, onChange, currentclass}) => {
                             variant="outlined"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField 
+                            autoFocus
+                            required
+                            fullWidth 
+                            type="number"
+                            size="small" 
+                            label="Week #" 
+                            variant="outlined"
+                            value={week}
+                            onChange={(e) => setWeek(e.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>

@@ -41,6 +41,7 @@ function Profile() {
 }
 
 export const StudentProfileForm = ({profile, user}) => {
+    const loggedInUser = fetchFromStorage('user')
     console.log(user)
     const {push} = useHistory()
     const [loading, setLoading] = useState(false)
@@ -107,16 +108,16 @@ export const StudentProfileForm = ({profile, user}) => {
     }, [getSections, getProfileImage])
     const imageRef = useRef()
     const handleFileChange = async (e) =>{
-        const form  = new FormData() 
-        form.append('media', e.target.files[0])
-        setLoading(true)
-        const {data} = await axiosInstance.post(`/users/uploadavatar/${user._id}`, form)
-        console.log(data)
-        setProfileImage(data.link)
-        const path = data.file.key
-        const updatedUser = {...user, avatar: path}
-        saveToStorage('user', updatedUser)
-        setLoading(false)
+         const form  = new FormData() 
+         form.append('media', e.target.files[0])
+         setLoading(true)
+         const {data} = await axiosInstance.post(`/users/uploadavatar/${user._id}`, form)
+         console.log(data)
+         setProfileImage(data.link)
+         const path = data.file.key
+         const updatedUser = {...user, avatar: path}
+         saveToStorage('user', updatedUser)
+         setLoading(false)
     }
     const handleImageClick = () => {
         imageRef.current.click()
@@ -154,7 +155,9 @@ export const StudentProfileForm = ({profile, user}) => {
                             ): (
                                 <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Restore Student Records</Button>
                             ): null}
-                            <Button size="small" color="primary" variant='contained' onClick={() => push('/change-password')} startIcon={<Lock />}>Change Password</Button>
+                            {loggedInUser.access_level !== 2048 && (
+                                <Button size="small" color="primary" variant='contained' onClick={() => push('/change-password')} startIcon={<Lock />}>Change Password</Button>
+                            )}
                     </Grid>
                     <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginY: 2}}>
                         <input 

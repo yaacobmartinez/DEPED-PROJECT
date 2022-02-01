@@ -77,6 +77,7 @@ function App() {
               <TeacherRoute exact path="/faculty/notifications" component={Notifications} />
               <TeacherRoute exact path="/faculty/announcements" component={FacultyAnnouncements} />
               <TeacherRoute exact path="/faculty/profile" component={FacultyProfile} />
+              <TeacherRoute exact path="/faculty/change-password" component={ChangePass} />
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />
@@ -108,7 +109,7 @@ function App() {
               <SuperAdminRoute exact path="/user/:id" component={User} />
               <SuperAdminRoute exact path="/school/:id" component={School} />
 
-              <Route exact path="/change-password" component={ChangePassword} />
+              <Route exact path="/change-password" component={ChangePass} />
               
               <Route path="*" component={PageNotFound} />
             </Switch>

@@ -1,8 +1,8 @@
-import { Add, ChevronRight, GridView, ViewList } from '@mui/icons-material';
+import { Add, ChevronRight, GridView, RemoveCircle, ViewList } from '@mui/icons-material';
 import { Button, Card, CardActionArea, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemText, MenuItem, Select, TextField, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useFormik } from 'formik';
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import axiosInstance from '../../library/axios';
 import { AuthenticatedAppBar } from '../layout/CustomAppBar';
 import CustomBottomBar from '../layout/CustomBottomBar';
@@ -134,102 +134,92 @@ const ClassCard = ({c}) => {
 const NewClassDialog = ({grade, section, open, onClose, onChange, teachers}) => {
     const yearNow = new Date().getFullYear()
     const currentSY = `${yearNow} - ${yearNow + 1}`
-    const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
-        initialValues: {
-            grade_level: grade,
-            section, 
-            className: '',
-            teacher: '',
-            start_time: '',
-            end_time: '',
-            school_year: currentSY
-        }, 
-        validationSchema: Yup.object({
-            className: Yup.string()
-                .required('For what subject would this class be?'),
-            teacher: Yup.string()
-                .required('Who will be teaching the class?'),
-            start_time: Yup.string(),
-            end_time: Yup.string(),
-        }), 
-        onSubmit: async (values, {resetForm}) => {
-            console.log(values)
-            const {data} = await axiosInstance.post(`/classes`, values)
+    const initialValues = {
+        grade_level: grade,
+        section, 
+        teacher: '', 
+        school_year: currentSY, 
+        className: ['']
+    }
+    const [subjects, setSubjects] = useState(initialValues)
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        await Promise.all(subjects.className.map(async (className) =>{
+            const subjectToAdd = {...subjects, className}
+            const {data} = await axiosInstance.post(`/classes`, subjectToAdd)
             console.log(data)
-            resetForm()
-            onChange()
-            onClose()
-        }
-    })
+        }))
+        onChange()
+        onClose()
+    }
+    const handleAdd = () => {
+        setSubjects({...subjects, className: [...subjects.className, '']})
+    }
+
+    const handleRemove = (index) => {
+        const filtered = subjects.className.filter((c, idx) => idx !== index)
+        setSubjects({...subjects, className: filtered})
+    }
+
+    const handleClassNameChange = (e, index) => {
+        const classNames = subjects.className
+        classNames[index] = e.target.value
+        setSubjects({...subjects, className: classNames})
+    }
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth component="form" onSubmit={handleSubmit}>
             <DialogTitle>New Class Schedule Information</DialogTitle>
             <DialogContent sx={{padding: 2, mt: 2}}>
                 <Grid container spacing={2} >
-                    <Grid item xs={12}>
-                        <TextField 
-                            style={{marginTop: 10}}
-                            required
-                            fullWidth 
-                            label="Class Name e.g. Science, Math, English" 
-                            size="small" 
-                            InputLabelProps={{shrink: true}}
-                            name="className"
-                            value={values.className}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={Boolean(errors.className)}
-                            helperText={errors.className}
-                        />
-                    </Grid>
+                    
                     <Grid item xs={12}>
                         <FormControl fullWidth>
                             <InputLabel shrink={true}>Teacher</InputLabel>
                             <Select
                                 size="small"
-                                value={values.teacher}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={subjects.teacher}
+                                onChange={(e) => setSubjects({...subjects, teacher: e.target.value})}
                                 name="teacher"
                                 label="Teacher"
-                                error={Boolean(errors.teacher)}
                             >
                                 {teachers?.map((teacher, index) => (
                                     <MenuItem key={index} value={teacher._id}>{teacher.firstName} {teacher.lastName}</MenuItem>
                                 ))}
                             </Select>
-                            {errors.teacher && (
-                                <FormHelperText error>{errors.teacher}</FormHelperText>
-                            )}
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField 
-                            fullWidth 
-                            label="Start Time" 
-                            size="small" 
-                            InputLabelProps={{shrink: true}}
-                            name="start_time"
-                            value={values.start_time}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={Boolean(errors.start_time)}
-                            helperText={errors.start_time}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField 
-                            fullWidth 
-                            label="End Time" 
-                            size="small" 
-                            InputLabelProps={{shrink: true}}
-                            name="end_time"
-                            value={values.end_time}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={Boolean(errors.end_time)}
-                            helperText={errors.end_time}
-                        />
+
+                    {subjects.className.map((s, index) => (
+                        <Grid item xs={12} key={index} container spacing={1} alignItems="center">
+                            <Grid item xs={11}>
+                                <TextField 
+                                    style={{marginTop: 10}}
+                                    required
+                                    fullWidth 
+                                    label="Class Name e.g. Science, Math, English" 
+                                    size="small" 
+                                    InputLabelProps={{shrink: true}}
+                                    name={`subjects.className[${index}]`}
+                                    value={subjects.className[index]}
+                                    onChange={(e) => handleClassNameChange(e, index)}
+                                />
+                            </Grid>
+                            {index > 0 && (
+                                <Grid item xs={1}>
+                                    <IconButton size='small' onClick={() => handleRemove(index)}>
+                                        <RemoveCircle />
+                                    </IconButton>
+                                </Grid>
+                            )}
+                            
+                        </Grid>
+                    ))}
+                    
+                    <Grid item xs={12}>
+                        <Button 
+                            size="small" fullWidth variant="contained" startIcon={<Add />}
+                            onClick={handleAdd}
+                            >Add Subject</Button>
                     </Grid>
                 </Grid>
             </DialogContent>

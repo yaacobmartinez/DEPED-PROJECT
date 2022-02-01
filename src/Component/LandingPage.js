@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, FormControl, FormControlLabel, Grid, Hidden, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Snackbar, TextField } from '@mui/material';
+import { Alert, Checkbox, CssBaseline, Fab, FormControl, FormControlLabel, Grid, Hidden, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Snackbar, TextField } from '@mui/material';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CustomCarousel from './layout/CustomCarousel';
@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from '../library/axios'
 import { saveToStorage } from '../library/utilities/Storage';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { HelpOutline, Visibility, VisibilityOff } from '@mui/icons-material';
 
 export const LandingPage = ({type}) => {
     return(
@@ -31,9 +31,13 @@ export const LandingPage = ({type}) => {
             {type === 'register' && (
               <RegisterComponent />
             )}
-
+            <Fab variant="extended" size='small' color="primary" sx={{position: 'absolute', bottom: 10, right: 10, textTransform: 'none'}} target="_blank" href="https://docs.google.com/document/d/1b_XKjGfsiLob1LFWI-8T7ig_l4uu6Xh9wNDhJb7zWc8/edit">
+              <HelpOutline sx={{ mr: 1 }} />
+              How to use
+            </Fab>
           </Grid>
         </Grid>
+        
       </div>
     )
   }
@@ -324,7 +328,7 @@ const RegisterComponent = () => {
           required fullWidth
           label="Confirm Password"
           name="confirmPassword"
-          type="password"
+          type={showPassword ? "text": "password"} 
           autoComplete="password"
           value={values.confirmPassword}
           onChange={handleChange}

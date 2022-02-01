@@ -1,4 +1,4 @@
-import { CssBaseline, Toolbar, Typography, Grid, Button } from '@mui/material'
+import { CssBaseline, Toolbar, Typography, Grid, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions } from '@mui/material'
 import { Box } from '@mui/system'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -27,6 +27,7 @@ function Forms() {
         console.log(data.link)
         window.open(data.link, '_blank')
     }
+    const [remove, setRemove] = useState(null)
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -102,7 +103,10 @@ function Forms() {
                                 minWidth: 250,
                                 renderCell: cell => {
                                     return (
-                                        <Button size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                        <>
+                                            <Button sx={{mr: 2}} size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                            <Button size="small" variant="contained" color="warning" onClick={() => setRemove(cell.id)}>Delete</Button>
+                                        </>
                                     )
                                 }
                             },
@@ -113,12 +117,36 @@ function Forms() {
                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     />
                 )}
+                {remove && (
+                    <RemoveFormDialog open={Boolean(remove)} onClose={() => setRemove(null)} onChange={getForms} id={remove} />
+                )}
                     </Grid>
                 </Grid>
             </Box>
             <CustomBottomBar menu={adminMenu} />
         </Box>
     )
+}
+
+const RemoveFormDialog = ({open, onClose, onChange, id}) => {
+    const handleConfirm = async () => {
+        const {data} = await axiosInstance.delete(`/forms/${id}`)
+        console.log(data)
+        onClose()
+        onChange()
+    }
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Remove Form?</DialogTitle>
+            <DialogContent>
+                <DialogContentText>Are you sure you want to remove this form?</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                <Button variant='contained' color="warning" onClick={handleConfirm}>Remove Form</Button>
+            </DialogActions>
+        </Dialog>
+    ) 
 }
 
 export default Forms
