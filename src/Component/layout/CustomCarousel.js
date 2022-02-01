@@ -22,7 +22,7 @@ function CustomCarousel() {
         >
           {announcements?.map((image, index) => (
             <div key={index}>
-              <img src={image.link} alt="carousel_image" height="auto" />
+              <img src={image.link} alt="carousel_image" style={{height: '100vh'}} />
             </div>
           ))}
         </Carousel>

@@ -84,6 +84,17 @@ function MyClass() {
                                 }
                             },
                             { 
+                                field: 'week', 
+                                headerName: 'Week #',
+                                flex: 1,
+                                minWidth: 250,
+                                renderCell: cell => {
+                                    return (
+                                        <Typography variant="body2" color="black" >{cell.value}</Typography>
+                                    )
+                                }
+                            },
+                            { 
                                 field: 'originalname', 
                                 headerName: 'File Name',
                                 flex: 1,

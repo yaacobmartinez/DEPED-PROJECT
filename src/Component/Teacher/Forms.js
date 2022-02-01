@@ -1,5 +1,5 @@
 import { Add, CloudDownload, Delete, FilePresent, Save } from '@mui/icons-material'
-import { Autocomplete, Avatar, Button, CircularProgress, CssBaseline, FormControl, Grid, IconButton, InputLabel, ListItem, ListItemAvatar, ListItemText, MenuItem, Select, SwipeableDrawer, TextField, Toolbar, Typography } from '@mui/material'
+import { Autocomplete, Avatar, Button, CircularProgress, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputLabel, ListItem, ListItemAvatar, ListItemText, MenuItem, Select, SwipeableDrawer, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -16,6 +16,7 @@ function Forms() {
     const [newFormModal, setNewFormModal] = useState(false)
     const [forms, setForms] = useState([])
     const [pageSize, setPageSize] = React.useState(10);
+    const [remove, setRemove] = useState(null)
     const getForms = useCallback( async() => {
         const user = fetchFromStorage('user')
         const {data} = await axiosInstance(`/forms/user/${user._id}`)
@@ -105,7 +106,10 @@ function Forms() {
                                 minWidth: 250,
                                 renderCell: cell => {
                                     return (
-                                        <Button size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                        <>
+                                            <Button sx={{mr: 2}} size="small" variant="contained" onClick={() => handleDownload(cell.value)}>Download</Button>
+                                            <Button size="small" color="warning" variant="contained" onClick={() => setRemove(cell.id)}>Remove</Button>
+                                        </>
                                     )
                                 }
                             },
@@ -116,12 +120,38 @@ function Forms() {
                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     />
                 )}
+                {remove && (
+                    <RemoveFormDialog open={Boolean(remove)} onClose={() => setRemove(null)} onChange={getForms} id={remove} />
+                )}
             </Box>
             <CustomBottomBar menu={facultyMenu} />
         </Box>
     )
 }
 
+const RemoveFormDialog = ({open, onClose, onChange, id}) => {
+    const onRemove = async () => {
+        const {data} = await axiosInstance.delete(`/forms/${id}`)
+        console.log(data)
+        onClose()
+        onChange()
+    }
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Remove Form?</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Are you sure you want to remove this form?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose} variant="outlined" size="small">Cancel</Button>
+                <Button onClick={onRemove} variant="contained" color="warning" size="small">Remove Form</Button>
+
+            </DialogActions>
+        </Dialog>
+    )
+}
 const FormDrawer = ({open, onClose, onChange}) => {
 
     const [formType, setFormType] = useState(0)

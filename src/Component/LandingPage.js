@@ -20,7 +20,7 @@ export const LandingPage = ({type}) => {
       <Grid container sx = {{height: '100vh'}}>
           <CssBaseline />
           <Hidden mdDown>
-            <Grid item xs={false} sm={4} md={7} style={{display: 'flex', alignItems: 'center'}}>
+            <Grid item xs={false} sm={4} md={7} style={{display: 'flex', alignItems: 'flex-start'}}>
               <CustomCarousel />
             </Grid>
           </Hidden>
