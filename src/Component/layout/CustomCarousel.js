@@ -7,7 +7,7 @@ function CustomCarousel() {
   const getAnnouncements = useCallback(async() => {
       const {data} = await axiosInstance.get(`/globals`)
       console.log(data)
-      setAnnouncements(data.images)
+      setAnnouncements(data.images.reverse())
   }, [])
   useEffect(() => {
       getAnnouncements()
@@ -19,6 +19,7 @@ function CustomCarousel() {
           autoPlay
           infiniteLoop
           centerMode
+          interval={6000}
         >
           {announcements?.map((image, index) => (
             <div key={index}>

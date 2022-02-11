@@ -1,5 +1,5 @@
 import { Add } from '@mui/icons-material'
-import { Button, CssBaseline, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Toolbar, Typography } from '@mui/material'
+import { Button, CssBaseline, Snackbar, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Toolbar, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { Box } from '@mui/system'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -152,6 +152,8 @@ const NewRequestDialog = ({open, onClose, onChange}) =>{
             return setError(data.message)
         }
     } 
+
+    const documentTypes = ['Form 137', 'Form 138A (School Card)', 'Good Moral Character', 'Diploma']
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth component="form" onSubmit={handleSubmit}>
             <Snackbar
@@ -164,20 +166,22 @@ const NewRequestDialog = ({open, onClose, onChange}) =>{
             <DialogContent>
             <Grid container spacing={2} >
                 <Grid item xs={12}>
-                    <TextField 
-                        style={{marginTop: 10}}
-                        required
-                        fullWidth 
-                        label="Document Type" 
-                        size="small"
-                        value={documentType}
-                        onChange={({target}) => setDocumentType(target.value)} 
-                        InputLabelProps={{shrink: true}}
-                        name="type"
-                        placeholder="e.g. Form 137, School Card"
-                        error={Boolean(error)}
-                        helperText={error}
-                    />
+                    <FormControl fullWidth style={{marginTop: 20}}>
+                        <InputLabel shrink={true}>Document Type</InputLabel>
+                        <Select
+                            size="small"
+                            value={documentType}
+                            onChange={({target}) => setDocumentType(target.value)}
+                            name="type"
+                            label="Document Type"
+                            error={Boolean(error)}
+                            helperText={error}
+                        >
+                            {documentTypes.map((doc, index) => (
+                                <MenuItem key={index} value={doc}>{doc}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 </Grid>
             </DialogContent>

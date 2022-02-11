@@ -259,11 +259,14 @@ const NewModuleDrawer = ({open, onClose, onChange, currentclass}) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [week, setWeek] = useState(0)
     const {getRootProps, getInputProps} = useDropzone({
+        minSize: 1,
+        maxSize: 3145728, 
         maxFiles,
         accept: 'image/*,.pdf,.doc,.docx,.pptx,.ppt',
         onDrop: (acceptedFiles, rejectedFiles) => {
             if(rejectedFiles.length > 0) {
-                return setFileError(true)
+                console.log(rejectedFiles[0].errors[0].message)
+                return setFileError(rejectedFiles[0].errors[0].message)
             }
             setFile(acceptedFiles[0])
             console.log('accepted => ',acceptedFiles)
@@ -331,7 +334,7 @@ const NewModuleDrawer = ({open, onClose, onChange, currentclass}) => {
                                     <CloudDownload style={{fontSize: 50, color: '#8aa1b1'}} />          
                                     {fileError && (
                                         <Typography variant="subtitle2" color="red">
-                                            Please upload only {maxFiles} file/s.
+                                            {fileError}
                                         </Typography>
                                     )}                      
                                 </div>

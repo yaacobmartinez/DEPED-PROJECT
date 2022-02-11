@@ -11,7 +11,7 @@ import CustomBottomBar from '../layout/CustomBottomBar'
 import loadingAnimation from './loading.json'
 import Lottie from "lottie-react";
 import { useHistory } from 'react-router-dom'
-
+import {ChangePasswordForm} from '../ChangePass'
 function Profile() {
     const user = fetchFromStorage('user')
 
@@ -122,6 +122,7 @@ export const StudentProfileForm = ({profile, user}) => {
     const handleImageClick = () => {
         imageRef.current.click()
     }
+    const [changePass, setChangePass] = useState(false)
     return (
         <Grid container spacing={2} sx={{p: 2}} component="form" onSubmit={handleSubmit}> 
             <Backdrop open={loading} sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -156,8 +157,18 @@ export const StudentProfileForm = ({profile, user}) => {
                                 <Button onClick={() => setArchiveStudent(true)} size="small" color="primary" variant="contained" startIcon={<History />}>Restore Student Records</Button>
                             ): null}
                             {loggedInUser.access_level !== 2048 && (
-                                <Button size="small" color="primary" variant='contained' onClick={() => push('/change-password')} startIcon={<Lock />}>Change Password</Button>
+                                <Button size="small" color="primary" variant='contained' onClick={() => setChangePass(true)} startIcon={<Lock />}>Change Password</Button>
                             )}
+                    {changePass && (
+                        <Dialog open={changePass} onClose={() => setChangePass(false)} maxWidth="sm" fullWidth>
+                            <DialogContent>
+                                <ChangePasswordForm />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button size="small" variant="outlined" color="primary" onClick={() => setChangePass(false)}>Cancel</Button>
+                            </DialogActions>
+                        </Dialog>
+                    )}
                     </Grid>
                     <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', marginY: 2}}>
                         <input 
@@ -555,8 +566,14 @@ export const StudentProfileForm = ({profile, user}) => {
 
 const ArchiveStudentDialog = ({open, onClose, student, }) => {
     const [confirm, setConfirm] = useState('')
+    const user = fetchFromStorage('user')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
     const handleConfirm = async () =>{
-        const {data} = await axiosInstance.put(`/users/archive/${student._id}`, {archived: !student.archived})
+        const {data} = await axiosInstance.put(`/users/archive/${student._id}`, {archived: !student.archived, user: user._id, password })
+        if (!data.success) {
+            return setError('Invalid Password')
+        }
         console.log(data)
         window.location.reload(false)
         onClose()
@@ -569,18 +586,29 @@ const ArchiveStudentDialog = ({open, onClose, student, }) => {
                     Are you sure you want to {student.archived ? `restore`: `archive`} this student's records?
                 </Typography>
                 <Typography variant="caption" color="GrayText">
-                    Type in <i>{student.archived ? `restore records`: `archive student`}</i> to confirm this action. 
+                    Type in your <i>Password</i> to confirm this action. 
                 </Typography>
-                <TextField value={confirm} onChange={({target}) => setConfirm(target.value)} sx={{mt: 2}} placeholder={student.archived ? 'restore records' : 'archive student'} size="small" fullWidth/>
+                <TextField 
+                    error={Boolean(error)}
+                    helperText={error}
+                    type="password"
+                    value={password} 
+                    onChange={({target}) => setPassword(target.value)} 
+                    sx={{mt: 2}} 
+                    placeholder={`Password`} 
+                    size="small" fullWidth
+                />
             </DialogContent>
             <DialogActions>
                 <Button size="small" variant="outlined" color="primary" onClick={onClose}>Cancel</Button>
                 {student.archived ? (
-                    <Button size="small" variant="contained" color="primary" disabled={confirm !== 'restore records'} 
+                    <Button size="small" variant="contained" color="primary" 
+                    //disabled={confirm !== 'restore records'} 
                     onClick={handleConfirm} 
                     >Confirm</Button>
                 ):(
-                    <Button size="small" variant="contained" color="primary" disabled={confirm !== 'archive student'} 
+                    <Button size="small" variant="contained" color="primary" 
+                    //disabled={confirm !== 'archive student'} 
                     onClick={handleConfirm} 
                     >Confirm</Button>
                 ) }

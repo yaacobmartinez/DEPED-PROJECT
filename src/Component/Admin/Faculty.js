@@ -51,7 +51,7 @@ function Faculty() {
                 }
                 {
                     newFaculty && (
-                        <NewUserModal open={newFaculty} onClose={() => setNewFaculty(false)} refreshList={getUsers} schools={[school]} restricted={true}/>
+                        <NewUserModal open={newFaculty} onClose={() => setNewFaculty(false)} refreshList={getUsers} schools={[school]} restricted={true} isFaculty={true}/>
                     )
                 }
                 <Button size="small" color="primary" startIcon={<Add />} onClick={() => setNewFaculty(true)}>Add Faculty</Button>

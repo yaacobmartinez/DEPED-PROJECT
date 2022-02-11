@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Alert, Checkbox, CssBaseline, Fab, FormControl, FormControlLabel, Grid, Hidden, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Snackbar, TextField } from '@mui/material';
+import { Alert, Checkbox, CssBaseline, Fab, FormControl, FormControlLabel, FormHelperText, Grid, Hidden, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, Snackbar, TextField } from '@mui/material';
 import {Link, useHistory} from 'react-router-dom'
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import CustomCarousel from './layout/CustomCarousel';
@@ -205,7 +205,7 @@ const RegisterComponent = () => {
   const [message, setMessage] = React.useState(null)
   const [success, setSuccess] = React.useState("error")
   const [showPassword, setShowPassword] = React.useState(false)
-  const {errors, handleChange, values, handleBlur, handleSubmit} = useFormik({
+  const {errors, handleChange, values, touched, handleSubmit} = useFormik({
     initialValues: {
       firstName: '',
       lastName: '',
@@ -267,9 +267,8 @@ const RegisterComponent = () => {
             autoFocus
             value={values.firstName}
             onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(errors.firstName)}
-            helperText={errors.firstName}
+            error={touched.firstName && Boolean(errors.firstName)}
+            helperText={touched.firstName && errors.firstName}
           />
         <TextField
           size="small"
@@ -279,9 +278,8 @@ const RegisterComponent = () => {
           name="lastName"
           value={values.lastName}
           onChange={handleChange}
-          onBlur={handleBlur}
-          error={Boolean(errors.lastName)}
-          helperText={errors.lastName}
+          error={touched.lastName && Boolean(errors.lastName)}
+          helperText={touched.lastName && errors.lastName}
         />
         <TextField
           size="small"
@@ -289,12 +287,10 @@ const RegisterComponent = () => {
           required fullWidth
           label="Email Address"
           name="email"
-          autoComplete="email"
           value={values.email}
           onChange={handleChange}
-          onBlur={handleBlur}
-          error={Boolean(errors.email)}
-          helperText={errors.email}
+          error={touched.email && Boolean(errors.email)}
+          helperText={touched.email && errors.email}
         />
         <InputLabel>Password</InputLabel>
         <OutlinedInput
@@ -307,9 +303,8 @@ const RegisterComponent = () => {
           autoComplete="password"
           value={values.password}
           onChange={handleChange}
-          onBlur={handleBlur}
-          error={Boolean(errors.password)}
-          helperText={errors.password}
+          error={touched.password && Boolean(errors.password)}
+          helperText={touched.password && errors.password}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -322,6 +317,9 @@ const RegisterComponent = () => {
             </InputAdornment>
           }
           />
+          {(touched.password && errors.password) && (
+              <FormHelperText style={{color: 'red'}}>{errors.password}</FormHelperText>
+          )}  
         <TextField
           size="small"
           margin="normal"
@@ -332,9 +330,8 @@ const RegisterComponent = () => {
           autoComplete="password"
           value={values.confirmPassword}
           onChange={handleChange}
-          onBlur={handleBlur}
-          error={Boolean(errors.confirmPassword)}
-          helperText={errors.confirmPassword}
+          error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+          helperText={touched.confirmPassword && errors.confirmPassword}
           />
           {schools && (
             <FormControl fullWidth focused>
@@ -345,7 +342,6 @@ const RegisterComponent = () => {
                     value={values.school}
                     label="School"
                     onChange={handleChange}
-                    onBlur={handleBlur}
                     name="school"
                 >
                     {schools?.map((school, index) => (
@@ -368,9 +364,8 @@ const RegisterComponent = () => {
             name="lrn"
             value={values.lrn}
             onChange={handleChange}
-            onBlur={handleBlur}
-            error={Boolean(errors.lrn)}
-            helperText={errors.lrn}
+            error={touched.lrn && Boolean(errors.lrn)}
+            helperText={touched.lrn && errors.lrn}
           />
           <FormControlLabel
             value="terms-condition"

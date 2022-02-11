@@ -165,13 +165,14 @@ const FormDrawer = ({open, onClose, onChange}) => {
     const user = fetchFromStorage('user')
     const {getRootProps, getInputProps} = useDropzone({
         maxFiles: 1,
+        minSize: 1, maxSize: 3145728,
         accept: '.pdf,.doc,.docx,.pptx,.ppt,.xlsx,.xls',
         onDrop: (acceptedFiles, rejectedFiles) => {
             if(rejectedFiles.length > 0) {
-                return setFileError(true)
+                return setFileError(rejectedFiles[0].errors[0].message)
             }
             setFile(acceptedFiles[0])
-            console.log('accepted => ',acceptedFiles)
+            console.log('accepted => ',acceptedFiles[0])
             console.log('rejected =>', rejectedFiles)
         }
     });
@@ -294,7 +295,7 @@ const FormDrawer = ({open, onClose, onChange}) => {
                                     <CloudDownload style={{fontSize: 50, color: '#8aa1b1'}} />          
                                     {fileError && (
                                         <Typography variant="subtitle2" color="red">
-                                            Please upload only 1 file.
+                                            {fileError}
                                         </Typography>
                                     )}                      
                                 </div>

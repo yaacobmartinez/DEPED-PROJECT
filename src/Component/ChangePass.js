@@ -9,6 +9,17 @@ import * as Yup from 'yup';
 import axios from '../library/axios'
 
 function ChangePassword() {
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+            <Paper>
+                <ChangePasswordForm />
+            </Paper>
+
+        </div>
+    )
+}
+
+export const ChangePasswordForm = () => {
     const user = fetchFromStorage('user')
     const {goBack} = useHistory()
     const [success, setSuccess] = useState(false)
@@ -41,68 +52,64 @@ function ChangePassword() {
           }
     })
     return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
-            <Paper>
-                <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            {!success ? (
-                                <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1, padding: 2, width: 500 }}>
-                                    <Typography variant="h6">Change your Password</Typography>
-                                    <TextField
-                                        size="small"
-                                        margin="normal"
-                                        required fullWidth
-                                        label="Current Password"
-                                        name="old"
-                                        type="password"
-                                        value={values.old}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={Boolean(errors.old)}
-                                        helperText={errors.old}
-                                    />
-                                    <TextField
-                                        size="small"
-                                        margin="normal"
-                                        required fullWidth
-                                        label="New Password"
-                                        name="new"
-                                        type="password"
-                                        value={values.new}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={Boolean(errors.new)}
-                                        helperText={errors.new}
-                                    />
-                                    <TextField
-                                        size="small"
-                                        margin="normal"
-                                        required fullWidth
-                                        label="Confirm Password"
-                                        name="confirm"
-                                        type="password"
-                                        value={values.confirm}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        error={Boolean(errors.confirm)}
-                                        helperText={errors.confirm}
-                                    />
-                                    <Button type="submit" fullWidth variant="contained" sx= {{mt: 3, mb: 2}}>
-                                        Save Password
-                                    </Button>
-                                </Box>
-                            ) : (
-                                <Box sx = {{ mt: 1, padding: 2, width: 500 }}>
-                                    <Typography variant="h6">Password Changed.</Typography>
-                                    <Typography variant='body2' onClick={() => goBack()}>Go Back.</Typography>
-                                </Box>
-                            )}
-                    </Grid>
-                    
+        
+            <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        {!success ? (
+                            <Box component="form" onSubmit={handleSubmit} noValidate sx = {{ mt: 1, padding: 2, width: 500 }}>
+                                <Typography variant="h6">Change your Password</Typography>
+                                <TextField
+                                    size="small"
+                                    margin="normal"
+                                    required fullWidth
+                                    label="Current Password"
+                                    name="old"
+                                    type="password"
+                                    value={values.old}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={Boolean(errors.old)}
+                                    helperText={errors.old}
+                                />
+                                <TextField
+                                    size="small"
+                                    margin="normal"
+                                    required fullWidth
+                                    label="New Password"
+                                    name="new"
+                                    type="password"
+                                    value={values.new}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={Boolean(errors.new)}
+                                    helperText={errors.new}
+                                />
+                                <TextField
+                                    size="small"
+                                    margin="normal"
+                                    required fullWidth
+                                    label="Confirm Password"
+                                    name="confirm"
+                                    type="password"
+                                    value={values.confirm}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={Boolean(errors.confirm)}
+                                    helperText={errors.confirm}
+                                />
+                                <Button type="submit" fullWidth variant="contained" sx= {{mt: 3, mb: 2}}>
+                                    Save Password
+                                </Button>
+                            </Box>
+                        ) : (
+                            <Box sx = {{ mt: 1, padding: 2, width: 500 }}>
+                                <Typography variant="h6">Password Changed.</Typography>
+                                <Typography variant='body2' onClick={() => goBack()}>Go Back.</Typography>
+                            </Box>
+                        )}
                 </Grid>
-            </Paper>
-        </div>
+                
+            </Grid>
     )
 }
-
 export default ChangePassword

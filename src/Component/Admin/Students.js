@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axiosInstance from '../../library/axios'
 import { fetchFromStorage } from '../../library/utilities/Storage'
-import { Button, Chip, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
+import { Button, Chip, CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, Switch, TextField, Toolbar, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { AuthenticatedAppBar } from '../layout/CustomAppBar'
 import CustomDrawer, { adminMenu } from '../layout/CustomDrawer'
@@ -29,6 +29,16 @@ function Students() {
     React.useEffect(() => {
         getUsers()
     }, [getUsers])
+
+    const [selection, setSelection] = useState([])
+    const [openMultiple, setOpenMultiple] = useState(false)
+    const handleMultipleArchive = async () =>{
+        const {data} = await axiosInstance.put(`/users/multipleArchive`, {students: selection })
+        console.log(data)
+        setOpenMultiple(false)
+        getUsers()
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -49,6 +59,23 @@ function Students() {
                     )
                 }
                 <Button size='small' color="primary" variant="contained" onClick={() => setFilter(!filter)}>{filter ? `Show` : `Hide`} Archived Records</Button>
+                {selection.length > 0 && (
+                    <Button size='small' sx={{ml: 2}} color="primary" variant="contained" onClick={() => setOpenMultiple(true)}>Archived Selected</Button>
+                )}
+                {
+                    openMultiple && (
+                        <Dialog open={openMultiple} onClose={() => setOpenMultiple(false)} maxWidth="sm" fullWidth>
+                            <DialogTitle>Archive {selection.length} records?</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>Are you sure you want to archive these {selection.length} records? </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="outlined" size="small" onClick={() => setOpenMultiple(false)}>Cancel</Button>
+                                <Button variant="contained" color="warning" size="small" onClick={handleMultipleArchive}>Yes, Proceed</Button>
+                            </DialogActions>
+                        </Dialog>
+                    )
+                }
                 {users && (
                     <DataGrid rows={users.filter(a => filter ? !a.archived : a)} 
                             autoHeight 
@@ -56,6 +83,10 @@ function Students() {
                             getRowId={(row) => row._id}
                             components={{
                                 Toolbar: GridToolbar,
+                            }}
+                            checkboxSelection={true}
+                            onSelectionModelChange={(newSelectionModel) => {
+                                setSelection(newSelectionModel)
                             }}
                             columns={[
                                 { 
@@ -74,10 +105,11 @@ function Students() {
                                     }
                                 },
                                 { 
-                                    field: 'email', 
-                                    headerName: 'Email',
+                                    field: 'studentRecord', 
+                                    headerName: 'Grade Level',
                                     flex: 1,
-                                    minWidth: 350, 
+                                    minWidth: 350,
+                                    valueGetter: (params) => params.value.grade_level ? `Grade ${params.value.grade_level}` : 'Not Yet Provisioned'
                                 },
                                 { 
                                     field: 'provisioned', 
@@ -227,16 +259,14 @@ export const UpdateStudentForm = ({student, closeModal}) => {
                 .required('We need to know your first name.'),
             lastName: Yup.string()
                 .required('We need to know your last name.'),
-            middleName: Yup.string()
-                .required('We need to know your middle name.'),
+            middleName: Yup.string(),
             lrn: Yup.string()
                 .matches(/^[0-9]+$/, "Must be only digits")
                 .max(12, "LRN must be 12 digits")
                 .required('Please provide a valid LRN'),
             sex: Yup.string()
                 .required('Sex is required'),
-            bday: Yup.string()
-                .required('Birth Date is required'),
+            bday: Yup.string(),
             motherTongue: Yup.string(),
             IP: Yup.string(),
             grade_level: Yup.string()
@@ -282,7 +312,6 @@ export const UpdateStudentForm = ({student, closeModal}) => {
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField 
-                    required
                     fullWidth 
                     label="Middle Name" 
                     size="small" 
@@ -335,7 +364,6 @@ export const UpdateStudentForm = ({student, closeModal}) => {
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField
-                    required
                     fullWidth
                     size="small"
                     id="date"

@@ -235,6 +235,8 @@ const AnnouncementDialog = ({open, onClose, onChange}) => {
                                     <input {...getInputProps()} />
                                     <Typography variant="body2" color="GrayText">
                                         Drag 'n' drop some files here, or click to select files
+                                        <br />
+                                        Max: 3MB
                                     </Typography>
                                     <CloudDownload style={{fontSize: 50, color: '#8aa1b1'}} />
                                 </div>

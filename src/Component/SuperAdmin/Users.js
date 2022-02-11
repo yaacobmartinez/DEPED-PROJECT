@@ -167,7 +167,7 @@ export const ProvisionDialog = ({id, user, open, onClose, onChange}) => {
     )
 }
 
-export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) => {
+export const NewUserModal = ({open, onClose, refreshList, schools, restricted, isFaculty=false}) => {
     const [message, setMessage] = React.useState(null)
     const [success, setSuccess] = React.useState("error")
     const [loading, setLoading] = React.useState(false)
@@ -182,7 +182,7 @@ export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) 
           confirmed: true, 
           access_level: 2, 
           provisioned: true,
-          school: '',
+          school: isFaculty ? schools[0]?._id : "",
         }, 
         validationSchema: Yup.object({
           firstName: Yup.string()
@@ -216,7 +216,7 @@ export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth component="form" onSubmit={handleSubmit}>
             <AlertDialog callback={() => setMessage(null)} message={message} success={success}/>
-            <DialogTitle>Add New User Account</DialogTitle>
+            <DialogTitle>Add New {isFaculty ? 'Faculty' : 'User'} Account</DialogTitle>
             <DialogContent>
                 <Grid container spacing={2} xs={12}>
                     <Grid item xs={6}>
@@ -263,31 +263,34 @@ export const NewUserModal = ({open, onClose, refreshList, schools, restricted}) 
                             helperText={errors.email}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel>User Level Access</InputLabel>
-                            <Select
-                                size="small"
-                                value={values.access_level}
-                                label="User Level Access"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                name="access_level"
-                            >
-                                { !restricted && accountsAvailable.map((account) => (
-                                    <MenuItem value={account.value}>{account.text}</MenuItem>
-                                ))}
+                    {!isFaculty && (
+                        <Grid item xs={12}>
+                            <FormControl fullWidth>
+                                <InputLabel>User Level Access</InputLabel>
+                                <Select
+                                    size="small"
+                                    value={values.access_level}
+                                    label="User Level Access"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    name="access_level"
+                                >
+                                    { !restricted && accountsAvailable.map((account) => (
+                                        <MenuItem value={account.value}>{account.text}</MenuItem>
+                                    ))}
 
-                                {
-                                    restricted && (
-                                        <MenuItem value={2}>Faculty</MenuItem>
-                                    )
-                                }
-                            </Select>
-                        </FormControl>
-                    </Grid>
+                                    {
+                                        restricted && (
+                                            <MenuItem value={2}>Faculty</MenuItem>
+                                        )
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    )}
+
                     {
-                        values.access_level !== 4096 && (
+                        (values.access_level !== 4096 && !isFaculty) && (
                             <Grid item xs={12}>
                                 <FormControl fullWidth focused>
                                     <InputLabel shrink={true}>School</InputLabel>
