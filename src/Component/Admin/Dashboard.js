@@ -16,7 +16,6 @@ function Dashboard() {
     const user = JSON.parse(sessionStorage.getItem('user'))
     const [announcements, setAnnouncements] = useState([])
     const [schoolStats, setSchoolStats] = useState(null)
-
     const getSchool = useCallback ( async () => {
         const {data} = await axios.get(`/schools/stats/${user.school}`)
         setSchool(data.school_info)
@@ -85,6 +84,7 @@ function Dashboard() {
                         </Card>
                     </Grid>
                 </Grid>
+                
             </Box>
             <CustomBottomBar menu={adminMenu} />
         </Box>
@@ -119,7 +119,6 @@ export const AnnouncementCard = ({item}) => {
     useEffect(() => {
         getLinks()
     }, [getLinks])
-    console.log(isViewerOpen)
     return (
         <>
         <Grid item xs={12} sm={4} style={{cursor: 'pointer'}}>

@@ -164,12 +164,10 @@ function CustomDrawer() {
                     </ListItem>
                 )}
                 {user.access_level !== 3 && (
-                    <ListItem button component="a" href="https://calendar.google.com/" target="_blank">
-                        <ListItemIcon>
-                            <Event />
-                        </ListItemIcon>
-                        <ListItemText primary={<Typography variant="subtitle2">Calendar</Typography>} />
-                    </ListItem>
+                    <ListMenuItem item={{
+                        icon: <Event />,
+                        name: 'Calendar'
+                    }} callback={() => push('/admin/calendar')} currentRoute={pathname}/>
                 )}
                 {/* Change Link to Form Spreadsheet */}
                 {user.access_level === 2048 && (

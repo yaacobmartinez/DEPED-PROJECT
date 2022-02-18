@@ -34,7 +34,7 @@ import MyClass from './Component/Student/MyClass';
 import Notifications from './Component/Teacher/Notifications';
 import FacultyAnnouncements from './Component/Teacher/Announcements';
 import FacultyProfile from './Component/Teacher/Profile';
-
+import Calendar from './Component/Admin/CalendarPage'
 import Logs from './Component/Admin/Logs';
 import Requests from './Component/Admin/Requests';
 import ForgotPassword from './Component/ForgotPassword';
@@ -102,6 +102,8 @@ function App() {
               <AdminRoute exact path="/admin/forms" component={AdminForms} />
               <AdminRoute exact path="/admin/logs" component={Logs} />
               <AdminRoute exact path="/admin/requests" component={Requests} />
+              <AdminRoute exact path="/admin/calendar" component={Calendar} />
+
               
               <SuperAdminRoute exact path="/control-panel" component={SuperAdminDashboard} />
               <SuperAdminRoute exact path="/control-panel/users" component={Users} />
