@@ -38,7 +38,7 @@ import Calendar from './Component/Admin/CalendarPage'
 import Logs from './Component/Admin/Logs';
 import Requests from './Component/Admin/Requests';
 import ForgotPassword from './Component/ForgotPassword';
-
+import FacultyCalendar from './Component/Teacher/CalendarPage'
 const theme = createTheme({
   typography: {
     fontFamily: [
@@ -78,6 +78,8 @@ function App() {
               <TeacherRoute exact path="/faculty/announcements" component={FacultyAnnouncements} />
               <TeacherRoute exact path="/faculty/profile" component={FacultyProfile} />
               <TeacherRoute exact path="/faculty/change-password" component={ChangePass} />
+              <TeacherRoute exact path="/faculty/calendar" component={FacultyCalendar} />
+
 
               <StudentRoute exact path="/student" component={StudentDashboard} />
               <StudentRoute exact path="/student/profile" component={StudentProfile} />

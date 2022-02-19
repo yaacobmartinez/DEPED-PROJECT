@@ -163,11 +163,17 @@ function CustomDrawer() {
                         <ListItemText primary={<Typography variant="subtitle2">Survey Form</Typography>} />
                     </ListItem>
                 )}
-                {user.access_level !== 3 && (
+                {user.access_level === 2048 && (
                     <ListMenuItem item={{
                         icon: <Event />,
                         name: 'Calendar'
                     }} callback={() => push('/admin/calendar')} currentRoute={pathname}/>
+                )}
+                {user.access_level === 2 && (
+                    <ListMenuItem item={{
+                        icon: <Event />,
+                        name: 'Calendar'
+                    }} callback={() => push('/faculty/calendar')} currentRoute={pathname}/>
                 )}
                 {/* Change Link to Form Spreadsheet */}
                 {user.access_level === 2048 && (

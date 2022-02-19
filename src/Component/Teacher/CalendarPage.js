@@ -39,13 +39,6 @@ function CalendarPage() {
         setEvents(data.events)
     }, [])
     
-    const saveEvent = async () => {
-        console.log(selectedDate)
-        const {data} = await axiosInstance.post("/events", selectedDate)
-        console.log(data)
-        setEvents([...events, selectedDate])
-        setSelectedDate(null)
-    }
 
     useEffect(() => {
         getEvents()
@@ -72,19 +65,8 @@ function CalendarPage() {
                         }}
                         localizer={localizer}
                         onSelectEvent={event => setUpdateEvent(event)}
-                        onSelectSlot={createEvent}
                     />
                 </div>
-                {selectedDate && (
-                    <SaveDialog 
-                        open={Boolean(selectedDate)}
-                        onClose={() =>setSelectedDate(null)}
-                        selectedDate={selectedDate}
-                        setSelectedDate={setSelectedDate}
-                        type="add"
-                        refresh={getEvents}
-                    />
-                )}
                 {updateEvent && (
                     <SaveDialog 
                         open={Boolean(updateEvent)}
@@ -103,27 +85,6 @@ function CalendarPage() {
 export default CalendarPage
 
 const SaveDialog = ({open, onClose, selectedDate, setSelectedDate, type, refresh}) => {
-    const saveEvent = async () => {
-        console.log(selectedDate)
-        if (type === "add") {
-            const {data} = await axiosInstance.post("/events", selectedDate)
-            console.log(data)
-            refresh()
-            return setSelectedDate(null)
-        }
-
-        const {data} = await axiosInstance.put(`/events/${selectedDate?._id}`, selectedDate)
-        console.log(data)
-        refresh()
-        return setSelectedDate(null)
-        
-    } 
-    const removeEvent = async () => {
-        const {data} = await axiosInstance.delete(`/events/${selectedDate?._id}`)
-        console.log(data)
-        refresh()
-        setSelectedDate(null)
-    }
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{type === "add" ? 'Add New' : 'Update'} Event</DialogTitle>
@@ -132,10 +93,16 @@ const SaveDialog = ({open, onClose, selectedDate, setSelectedDate, type, refresh
                     <TextField required label="Event Name" placeholder='Event Name' value={selectedDate.title} 
                         onChange={(e) => setSelectedDate({...selectedDate, title: e.target.value})}
                         size="small" fullWidth sx={{mb: 3}}
+                        InputProps={{
+                            readOnly: true
+                        }}
                     />
                     <DateTimePicker
                         label="Start Date&Time"
                         value={selectedDate.start}
+                        InputProps={{
+                            readOnly: true
+                        }}
                         onChange={(e) => setSelectedDate({...selectedDate, start: e})}
                         renderInput={(params) => <TextField sx={{mb: 3}} fullWidth size="small" {...params} />}
                         
@@ -143,12 +110,15 @@ const SaveDialog = ({open, onClose, selectedDate, setSelectedDate, type, refresh
                     <DateTimePicker
                         label="End Date&Time"
                         value={selectedDate.end}
+                        InputProps={{
+                            readOnly: true
+                        }}
                         onChange={(e) => setSelectedDate({...selectedDate, end: e})}
-                        renderInput={(params) => <TextField sx={{mb: 3}} fullWidth size="small" {...params} />}
+                        renderInput={(params) => <TextField sx={{mb: 3}} fullWidth size="small" {...params}  />}
                     /> 
                 </LocalizationProvider>
             </DialogContent>
-            <DialogActions>
+            {/* <DialogActions>
                 <Button variant="outlined" size="small" onClick={() => setSelectedDate(null)}>
                     Cancel
                 </Button>
@@ -160,7 +130,7 @@ const SaveDialog = ({open, onClose, selectedDate, setSelectedDate, type, refresh
                 <Button variant="contained" color="primary" size="small" onClick={saveEvent}>
                     Save
                 </Button>
-            </DialogActions>
+            </DialogActions> */}
         </Dialog>
     )
 
